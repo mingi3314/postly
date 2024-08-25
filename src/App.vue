@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <h1>Postly - Instagram Magazine Post Generator</h1>
-    <div v-for="(reference, index) in references" :key="index">
+    <div v-for="reference in references" :key="reference.id">
       <textarea
         v-model="reference.text"
         placeholder="Enter reference text"
       ></textarea>
     </div>
-    <button @click="addReference">Add Reference</button>
+    <button @click="addReference" :disabled="references.length >= 5">
+      Add Reference
+    </button>
     <button @click="generatePost">Generate Post</button>
 
     <div v-if="generatedPost">
@@ -20,24 +22,27 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { generatePost } from "./langchain";
+import { v4 as uuidv4 } from "uuid"; // 고유 ID 생성을 위해 uuid 패키지 사용
+import { Reference } from "./types"; // Reference 타입 import
 
 export default defineComponent({
   setup() {
-    const references = ref([{ text: "" }]);
+    const references = ref<Reference[]>([{ id: uuidv4(), text: "" }]); // Reference 타입의 배열로 선언
+
     const generatedPost = ref("");
 
     const addReference = () => {
       if (references.value.length < 5) {
-        references.value.push({ text: "" });
+        references.value.push({ id: uuidv4(), text: "" });
       }
     };
 
     const generatePostHandler = async () => {
-      const texts = references.value
-        .map((ref) => ref.text)
-        .filter((text) => text.trim() !== "");
-      if (texts.length > 0) {
-        generatedPost.value = await generatePost(texts);
+      const validReferences = references.value.filter(
+        (ref) => ref.text.trim() !== ""
+      );
+      if (validReferences.length > 0) {
+        generatedPost.value = await generatePost(validReferences); // Reference 객체 배열 전달
       }
     };
 
