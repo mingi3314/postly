@@ -12,8 +12,10 @@
     "@langchain/openai": "^0.2.7",
     "core-js": "^3.8.3",
     "langchain": "^0.2.17",
+    "pinia": "^2.2.2",
     "vercel": "^37.2.1",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-router": "^4.4.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",
