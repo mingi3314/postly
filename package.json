@@ -2,6 +2,7 @@
   "name": "postly",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -11,6 +12,7 @@
     "@langchain/openai": "^0.2.7",
     "core-js": "^3.8.3",
     "langchain": "^0.2.17",
+    "vercel": "^37.2.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {
