@@ -53,8 +53,8 @@ export default defineComponent({
   setup() {
     const references = ref([{ text: "" }, { text: "" }, { text: "" }]);
     const generatedPost = ref("");
-    const isGenerating = ref(true);
-    const isLoading = ref(false);
+    const isGenerating = ref(false);
+    const isLoading = ref(true);
 
     const generatePostHandler = async () => {
       isGenerating.value = true;
