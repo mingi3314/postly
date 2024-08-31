@@ -2,8 +2,12 @@
   <div id="app">
     <div v-if="!isGenerating">
       <!-- 첫 번째 화면 -->
-      <h1>변환할 기사의 내용을 입력하세요.</h1>
-      <p>기사는 최대 3개, 각 기사 내용은 5,000자 이내로 입력할 수 있습니다.</p>
+      <div class="title">
+        <h1>변환할 기사의 내용을 입력하세요.</h1>
+        <p>
+          기사는 최대 3개, 각 기사 내용은 5,000자 이내로 입력할 수 있습니다.
+        </p>
+      </div>
       <div class="article-inputs">
         <div
           v-for="(reference, index) in references"
@@ -18,7 +22,7 @@
           ></textarea>
         </div>
       </div>
-      <button @click="generatePost">3개의 기사 변환하기</button>
+      <button @click="generatePost">기사 변환하기</button>
     </div>
 
     <div v-else>
@@ -29,11 +33,12 @@
         <div class="spinner"></div>
       </div>
       <div v-else>
-        <h2>변환된 기사 내용을 확인하세요.</h2>
+        <h1>변환된 기사 내용을 확인하세요.</h1>
+        <p>실제로 어떻게 보일지 확인할 수 있어요.</p>
         <div class="generated-article">
           <p>{{ generatedPost }}</p>
         </div>
-        <button @click="reset">다시 변환하기</button>
+        <button class="btn_1" @click="reset">다시 변환하기</button>
         <button @click="copyPost">기사 복사하기</button>
       </div>
     </div>
@@ -48,8 +53,8 @@ export default defineComponent({
   setup() {
     const references = ref([{ text: "" }, { text: "" }, { text: "" }]);
     const generatedPost = ref("");
-    const isGenerating = ref(false);
-    const isLoading = ref(true);
+    const isGenerating = ref(true);
+    const isLoading = ref(false);
 
     const generatePostHandler = async () => {
       isGenerating.value = true;
@@ -87,16 +92,43 @@ export default defineComponent({
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "S-CoreDream-3Light", "";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  margin: 40px;
+  margin: 80px 80px;
+  font-family: "S-CoreDream-3Light";
+  font-weight: normal;
+  font-style: normal;
+}
+
+.title {
+  width: 60%;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  margin: 8px 0 40px 0;
+}
+
+label {
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .article-inputs {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .article-input {
@@ -105,16 +137,22 @@ export default defineComponent({
 
 textarea {
   width: 100%;
-  height: 150px;
-  margin-top: 10px;
+  height: 400px;
+  margin-top: 8px;
+  padding: 12px;
+  font-size: 15px;
+  border-color: #ddd;
+  border-radius: 12px;
 }
 
 button {
-  margin: 20px 10px;
-  padding: 10px 20px;
-  background-color: #42b983;
+  margin: 20px 0px;
+  padding: 16px 48px;
+  font-size: 16px;
+  background-color: #0b0564;
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
 }
 
@@ -151,10 +189,21 @@ button:disabled {
 }
 
 .generated-article {
-  margin: 20px auto;
-  padding: 20px;
+  margin: 24px 0;
+  padding: 12px;
   border: 1px solid #ddd;
-  max-width: 600px;
+  max-width: 360px;
+  height: 400px;
   text-align: left;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  border-radius: 12px;
+}
+
+.btn_1 {
+  margin-right: 16px;
+  background-color: #a09eb0;
+  color: #0b0564;
 }
 </style>
