@@ -8,30 +8,23 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import ArticleInputForm from "./ArticleInputForm.vue";
 import { useRouter } from "vue-router";
-import { Reference } from "../types";
+import { useArticleStore } from "../stores/articleStore";
+import ArticleInputForm from "../components/ArticleInputForm.vue";
 
 export default defineComponent({
   components: { ArticleInputForm },
   setup() {
-    const references = ref<Reference[]>([
-      { text: "" },
-      { text: "" },
-      { text: "" },
-    ]);
+    const references = ref([{ text: "" }, { text: "" }, { text: "" }]);
     const router = useRouter();
+    const articleStore = useArticleStore();
 
     const generatePost = () => {
-      // Serialize references to a query string or route params
-      const serializedReferences = JSON.stringify(references.value);
-      router.push({ path: "/loading", query: { refs: serializedReferences } });
+      articleStore.setReferences(references.value);
+      router.push("/loading");
     };
 
-    return {
-      references,
-      generatePost,
-    };
+    return { references, generatePost };
   },
 });
 </script>

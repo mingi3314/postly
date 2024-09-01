@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
-import GeneratedArticle from "./GeneratedArticle.vue";
+import GeneratedArticle from "../components/GeneratedArticle.vue";
 import { useArticleStore } from "../stores/articleStore";
 
 export default defineComponent({
