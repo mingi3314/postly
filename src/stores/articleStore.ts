@@ -14,11 +14,7 @@ export const useArticleStore = defineStore("article", {
     },
 
     // Action to generate the post based on the provided references
-    async generatePost(references: Reference[]) {
-      // Optionally update the references in the state if you want to keep track of them
-      this.references = references;
-
-      // Generate the post based on the passed references
+    async generatePost() {
       this.generatedPost = await generatePost(this.references);
     },
   },
