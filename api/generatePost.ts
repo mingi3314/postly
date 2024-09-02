@@ -56,7 +56,7 @@ const prompt = PromptTemplate.fromTemplate(
 
 const model = new ChatOpenAI({
   model: "gpt-4o-mini",
-  apiKey: process.env.OPENAI_API_KEY, // 서버에서 환경 변수로 설정
+  apiKey: process.env.VUE_APP_OPENAI_API_KEY, // 서버에서 환경 변수로 설정
 });
 
 const parser = new StringOutputParser();
@@ -98,6 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ result });
   } catch (error) {
+    console.error("Error invoking the chain:", error);
     return res.status(500).json({ error: "Failed to generate post" });
   }
 }
