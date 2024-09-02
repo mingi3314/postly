@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>변환할 기사의 내용을 입력하세요.</h1>
+    <p>기사는 최대 3개, 각 기사 내용은 5,000자 이내로 입력할 수 있습니다.</p>
     <ArticleInputForm :references="references" />
     <button @click="generatePost">기사 변환하기</button>
   </div>
