@@ -33,14 +33,27 @@ export default defineComponent({
 <style scoped>
 h1 {
   margin: 0;
+  font-size: 24px;
 }
 
 p {
-  margin: 8px 0 40px 0;
+  margin: 8px 0 20px 0;
+  font-size: 14px;
 }
 
 label {
   font-size: 16px;
   font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 32px;
+  }
+
+  p {
+    margin: 8px 0 40px 0;
+    font-size: 16px;
+  }
 }
 </style>
