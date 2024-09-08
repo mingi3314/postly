@@ -3,8 +3,10 @@
     <h1>변환된 기사 내용을 확인하세요.</h1>
     <!-- Ensure generatedPost is defined before passing it -->
     <GeneratedArticle :content="generatedPost" />
-    <button class="btn_1" @click="reset">다시 변환하기</button>
-    <button @click="copyPost">기사 복사하기</button>
+    <div class="button-container">
+      <button class="btn_1" @click="reset">다시 변환하기</button>
+      <button @click="copyPost">기사 복사하기</button>
+    </div>
   </div>
 </template>
 
@@ -43,13 +45,34 @@ export default defineComponent({
 </script>
 
 <style scoped>
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .btn_1 {
-  margin-right: 16px;
   background-color: #a09eb0;
   color: #0b0564;
 }
 
-.title {
-  width: 60%;
+@media (min-width: 768px) {
+  h1 {
+    font-size: 32px;
+  }
+
+  .button-container {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .btn_1 {
+    margin-right: 16px;
+  }
 }
 </style>

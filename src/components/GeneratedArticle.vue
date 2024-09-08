@@ -23,12 +23,20 @@ export default defineComponent({
   margin: 24px 0;
   padding: 12px;
   border: 1px solid #ddd;
-  max-width: 360px;
-  height: 400px;
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
   text-align: left;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
   border-radius: 12px;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .generated-article {
+    height: 400px;
+  }
 }
 </style>

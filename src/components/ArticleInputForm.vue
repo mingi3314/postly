@@ -32,20 +32,38 @@ export default defineComponent({
 <style scoped>
 .article-inputs {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .article-input {
-  width: 30%;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 textarea {
   width: 100%;
-  height: 400px;
+  height: 200px;
   margin-top: 8px;
   padding: 12px;
-  font-size: 15px;
+  font-size: 14px;
   border-color: #ddd;
   border-radius: 12px;
+}
+
+@media (min-width: 768px) {
+  .article-inputs {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .article-input {
+    width: 30%;
+    margin-bottom: 0;
+  }
+
+  textarea {
+    height: 400px;
+    font-size: 15px;
+  }
 }
 </style>
