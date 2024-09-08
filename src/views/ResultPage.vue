@@ -1,11 +1,10 @@
 <template>
-  <div>
+  <div class="result-page">
     <h1>변환된 기사 내용을 확인하세요.</h1>
-    <!-- Ensure generatedPost is defined before passing it -->
     <GeneratedArticle :content="generatedPost" />
     <div class="button-container">
-      <button class="btn_1" @click="reset">다시 변환하기</button>
-      <button @click="copyPost">기사 복사하기</button>
+      <button class="btn btn_1" @click="reset">다시 변환하기</button>
+      <button class="btn btn_2" @click="copyPost">기사 복사하기</button>
     </div>
   </div>
 </template>
@@ -45,34 +44,51 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.result-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 h1 {
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .button-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .btn_1 {
   background-color: #a09eb0;
   color: #0b0564;
+  margin-right: 10px;
+}
+
+.btn_2 {
+  background-color: #0095f6;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.8;
 }
 
 @media (min-width: 768px) {
   h1 {
-    font-size: 32px;
-  }
-
-  .button-container {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .btn_1 {
-    margin-right: 16px;
+    font-size: 20px;
   }
 }
 </style>
