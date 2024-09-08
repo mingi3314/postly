@@ -29,3 +29,18 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+h1 {
+  margin: 0;
+}
+
+p {
+  margin: 8px 0 40px 0;
+}
+
+label {
+  font-size: 16px;
+  font-weight: 500;
+}
+</style>

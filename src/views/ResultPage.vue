@@ -48,4 +48,8 @@ export default defineComponent({
   background-color: #a09eb0;
   color: #0b0564;
 }
+
+.title {
+  width: 60%;
+}
 </style>
