@@ -1,10 +1,12 @@
 <template>
   <div class="result-page">
-    <h1>변환된 기사 내용을 확인하세요.</h1>
+    <h1>생성된 포스트를 확인해보세요.</h1>
     <GeneratedArticle :content="generatedPost" />
     <div class="button-container">
-      <button class="btn btn-primary" @click="reset">다시 변환하기</button>
-      <button class="btn btn-secondary" @click="copyPost">기사 복사하기</button>
+      <button class="btn btn-primary" @click="reset">처음으로</button>
+      <button class="btn btn-secondary" @click="copyPost">
+        포스트 복사하기
+      </button>
     </div>
   </div>
 </template>
@@ -45,15 +47,17 @@ export default defineComponent({
 
 <style scoped>
 .result-page {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 100%;
+  margin: 0;
+  padding: 20px 0;
+  overflow-x: hidden;
 }
 
 h1 {
   font-size: 20px;
   margin-bottom: 20px;
   text-align: center;
+  padding: 0 20px;
 }
 
 .button-container {
@@ -61,6 +65,7 @@ h1 {
   justify-content: center;
   gap: 10px;
   margin-top: 20px;
+  padding: 0 20px;
 }
 
 @media (max-width: 768px) {
