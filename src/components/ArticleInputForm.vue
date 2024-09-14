@@ -46,8 +46,9 @@ textarea {
   margin-top: 8px;
   padding: 12px;
   font-size: 14px;
-  border-color: #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
+  font-family: var(--font-family);
 }
 
 @media (min-width: 768px) {
@@ -57,7 +58,7 @@ textarea {
   }
 
   .article-input {
-    width: 30%;
+    width: calc(33% - 10px);
     margin-bottom: 0;
   }
 

@@ -3,7 +3,9 @@
     <p v-if="!error">포스트를 생성 중입니다...</p>
     <p v-else class="error">{{ error }}</p>
     <LoadingSpinner v-if="!error" />
-    <button v-else @click="goHome">다시 시도하기</button>
+    <button v-else class="btn btn-primary" @click="goHome">
+      다시 시도하기
+    </button>
   </div>
 </template>
 
@@ -49,6 +51,7 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   height: 100vh;
+  text-align: center;
 }
 
 .error {

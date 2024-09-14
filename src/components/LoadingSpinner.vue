@@ -12,8 +12,8 @@ export default defineComponent({
 
 <style scoped>
 .spinner {
-  border: 6px solid #ccc;
-  border-top: 6px solid #42b983;
+  border: 6px solid var(--border-color);
+  border-top: 6px solid var(--primary-color);
   border-radius: 50%;
   width: 50px;
   height: 50px;
