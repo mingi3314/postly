@@ -1,14 +1,12 @@
-import { Reference } from "./types";
-
 const apiUrl = process.env.VUE_APP_API_URL;
 
-export async function generatePost(references: Reference[]): Promise<string> {
+export async function generatePost(topic: string): Promise<string> {
   const response = await fetch(`${apiUrl}/generatePost`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ references }),
+    body: JSON.stringify({ topic }),
   });
 
   if (!response.ok) {
