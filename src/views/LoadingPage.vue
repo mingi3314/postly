@@ -1,12 +1,14 @@
 <template>
   <div class="loading-page">
-    <p>기사를 변환 중입니다...</p>
-    <LoadingSpinner />
+    <p v-if="!error">포스트를 생성 중입니다...</p>
+    <p v-else class="error">{{ error }}</p>
+    <LoadingSpinner v-if="!error" />
+    <button v-else @click="goHome">다시 시도하기</button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "../stores/articleStore";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
@@ -16,13 +18,26 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const articleStore = useArticleStore();
+    const error = ref("");
+
+    const goHome = () => {
+      router.push("/");
+    };
 
     onMounted(async () => {
-      await articleStore.generatePost();
-      router.push({ name: "Result" });
+      try {
+        await articleStore.generatePost();
+        router.push({ name: "Result" });
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          error.value = e.message;
+        } else {
+          error.value = "포스트 생성 중 오류가 발생했습니다.";
+        }
+      }
     });
 
-    return {};
+    return { error, goHome };
   },
 });
 </script>
@@ -34,5 +49,10 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   height: 100vh;
+}
+
+.error {
+  color: red;
+  margin-bottom: 20px;
 }
 </style>

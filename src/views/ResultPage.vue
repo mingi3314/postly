@@ -25,7 +25,7 @@ export default defineComponent({
     const generatedPost = articleStore.generatedPost || "";
 
     const reset = () => {
-      articleStore.setReferences([]);
+      articleStore.setTopic("");
       router.push("/");
     };
 
