@@ -3,8 +3,8 @@
     <h1>변환된 기사 내용을 확인하세요.</h1>
     <GeneratedArticle :content="generatedPost" />
     <div class="button-container">
-      <button class="btn btn_1" @click="reset">다시 변환하기</button>
-      <button class="btn btn_2" @click="copyPost">기사 복사하기</button>
+      <button class="btn btn-primary" @click="reset">다시 변환하기</button>
+      <button class="btn btn-secondary" @click="copyPost">기사 복사하기</button>
     </div>
   </div>
 </template>
@@ -59,7 +59,14 @@ h1 {
 .button-container {
   display: flex;
   justify-content: center;
+  gap: 10px;
   margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+  }
 }
 
 .btn {
@@ -71,13 +78,13 @@ h1 {
   transition: background-color 0.3s;
 }
 
-.btn_1 {
+.btn-primary {
   background-color: #a09eb0;
   color: #0b0564;
   margin-right: 10px;
 }
 
-.btn_2 {
+.btn-secondary {
   background-color: #0095f6;
   color: white;
 }

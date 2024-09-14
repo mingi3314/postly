@@ -1,0 +1,50 @@
+@font-face {
+  font-family: "S-CoreDream-3Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --primary-color: #0b0564;
+  --secondary-color: #0095f6;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #dbdbdb;
+  --font-family: "S-CoreDream-3Light", sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  margin: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    width: 100%;
+  }
+}

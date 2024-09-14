@@ -39,12 +39,11 @@ export default defineComponent({
 .instagram-post {
   max-width: 600px;
   width: 100%;
-  border: 1px solid #dbdbdb;
+  border: 1px solid var(--border-color);
   border-radius: 3px;
   margin: 0 auto;
-  background-color: white;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  background-color: var(--background-color);
+  font-family: var(--font-family);
 }
 
 .post-header {
@@ -112,8 +111,8 @@ export default defineComponent({
 @media (max-width: 600px) {
   .instagram-post {
     border: none;
-    border-top: 1px solid #dbdbdb;
-    border-bottom: 1px solid #dbdbdb;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
 }
 </style>
