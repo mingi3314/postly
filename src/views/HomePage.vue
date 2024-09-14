@@ -6,6 +6,7 @@
         v-model="topic"
         placeholder="주제를 입력해주세요..."
         class="search-input"
+        @keyup.enter="generatePost"
       />
       <button
         class="btn btn-primary search-button"
@@ -31,8 +32,8 @@ export default defineComponent({
     const articleStore = useArticleStore();
 
     const generatePost = async () => {
-      if (topic.value) {
-        await articleStore.setTopic(topic.value);
+      if (topic.value.trim()) {
+        await articleStore.setTopic(topic.value.trim());
         router.push("/loading");
       }
     };
