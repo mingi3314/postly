@@ -4,7 +4,7 @@
     <div class="search-container">
       <input
         v-model="topic"
-        placeholder="주제를 입력해주세요..."
+        placeholder="키워드를 입력해주세요..."
         class="search-input"
         @keyup.enter="generatePost"
       />
