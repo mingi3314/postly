@@ -43,7 +43,8 @@ export default defineComponent({
   border-radius: 3px;
   margin: 0 auto;
   background-color: var(--background-color);
-  font-family: var(--font-family);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 }
 
 .post-header {
@@ -110,6 +111,9 @@ export default defineComponent({
 
 @media (max-width: 600px) {
   .instagram-post {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
     border: none;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
