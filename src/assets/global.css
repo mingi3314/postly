@@ -30,7 +30,7 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
@@ -38,13 +38,27 @@ body {
   color: white;
 }
 
+.btn-primary:hover {
+  background-color: #0d0780;
+}
+
+.btn-primary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 .btn-secondary {
   background-color: var(--secondary-color);
   color: white;
 }
 
+.btn-secondary:hover {
+  background-color: #0077c8;
+}
+
 @media (max-width: 768px) {
   .btn {
     width: 100%;
+    max-width: 300px;
   }
 }
