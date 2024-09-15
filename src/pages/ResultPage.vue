@@ -1,27 +1,53 @@
 <template>
   <div class="result-page">
-    <h1>생성된 포스트를 확인해보세요.</h1>
-    <GeneratedArticle :content="generatedPost" />
-    <div class="button-container">
-      <button class="btn btn-primary" @click="reset">처음으로</button>
-      <button class="btn btn-secondary" @click="copyPost">
-        포스트 복사하기
-      </button>
-    </div>
+    <template v-if="isLoading">
+      <LoadingComponent />
+    </template>
+    <template v-else-if="error">
+      <p class="error">{{ error }}</p>
+      <button class="btn btn-primary" @click="reset">다시 시도하기</button>
+    </template>
+    <template v-else>
+      <h1>생성된 포스트를 확인해보세요.</h1>
+      <GeneratedPost :content="generatedPost" />
+      <div class="button-container">
+        <button class="btn btn-primary" @click="reset">처음으로</button>
+        <button class="btn btn-secondary" @click="copyPost">
+          포스트 복사하기
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import GeneratedArticle from "../components/GeneratedArticle.vue";
+import GeneratedPost from "../components/GeneratedPost.vue";
+import LoadingComponent from "../components/LoadingComponent.vue";
 import { useArticleStore } from "../stores/articleStore";
 
 export default defineComponent({
-  components: { GeneratedArticle },
+  components: { GeneratedPost, LoadingComponent },
   setup() {
     const router = useRouter();
     const articleStore = useArticleStore();
+    const isLoading = ref(true);
+    const error = ref("");
+
+    onMounted(async () => {
+      try {
+        await articleStore.generatePost();
+        isLoading.value = false;
+      } catch (e: unknown) {
+        isLoading.value = false;
+        if (e instanceof Error) {
+          error.value = e.message;
+        } else {
+          error.value = "포스트 생성 중 오류가 발생했습니다.";
+        }
+      }
+    });
 
     // Ensure generatedPost is not undefined
     const generatedPost = articleStore.generatedPost || "";
@@ -33,11 +59,13 @@ export default defineComponent({
 
     const copyPost = () => {
       navigator.clipboard.writeText(generatedPost);
-      alert("기사가 복사되었습니다.");
+      alert("포스트가 복사되었습니다.");
     };
 
     return {
       generatedPost,
+      isLoading,
+      error,
       reset,
       copyPost,
     };

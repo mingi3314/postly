@@ -34,7 +34,7 @@ export default defineComponent({
     const generatePost = async () => {
       if (topic.value.trim()) {
         await articleStore.setTopic(topic.value.trim());
-        router.push("/loading");
+        router.push("/result");
       }
     };
 
