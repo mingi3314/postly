@@ -25,7 +25,7 @@
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
-  name: "GeneratedArticle",
+  name: "GeneratedPost",
   props: {
     content: {
       type: String as PropType<string>,

@@ -1,16 +1,28 @@
 <template>
-  <div class="spinner"></div>
+  <div class="loading-component">
+    <p>포스트를 생성 중입니다...</p>
+    <div class="spinner"></div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "LoadingSpinner",
+  name: "LoadingComponent",
 });
 </script>
 
 <style scoped>
+.loading-component {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
 .spinner {
   border: 6px solid var(--border-color);
   border-top: 6px solid var(--primary-color);
