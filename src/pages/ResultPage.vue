@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import GeneratedPost from "../components/GeneratedPost.vue";
 import LoadingComponent from "../components/LoadingComponent.vue";
@@ -38,19 +38,19 @@ export default defineComponent({
     onMounted(async () => {
       try {
         await articleStore.generatePost();
-        isLoading.value = false;
       } catch (e: unknown) {
-        isLoading.value = false;
         if (e instanceof Error) {
           error.value = e.message;
         } else {
           error.value = "포스트 생성 중 오류가 발생했습니다.";
         }
+      } finally {
+        isLoading.value = false;
       }
     });
 
-    // Ensure generatedPost is not undefined
-    const generatedPost = articleStore.generatedPost || "";
+    const generatedPost = computed(() => articleStore.generatedPost || "");
+    console.log(`generatedPost: ${generatedPost.value}`);
 
     const reset = () => {
       articleStore.setTopic("");
@@ -58,7 +58,7 @@ export default defineComponent({
     };
 
     const copyPost = () => {
-      navigator.clipboard.writeText(generatedPost);
+      navigator.clipboard.writeText(generatedPost.value);
       alert("포스트가 복사되었습니다.");
     };
 
