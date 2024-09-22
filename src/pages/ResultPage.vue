@@ -50,7 +50,6 @@ export default defineComponent({
     });
 
     const generatedPost = computed(() => articleStore.generatedPost || "");
-    console.log(`generatedPost: ${generatedPost.value}`);
 
     const reset = () => {
       articleStore.setTopic("");
