@@ -101,48 +101,9 @@
   --p-text-muted-color: var(--p-surface-400);
   --p-text-hover-muted-color: var(--p-surface-300);
 }
+
 body {
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
 }
-/* 
-
-.btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0d0780;
-}
-
-.btn-primary:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: var(--secondary-color);
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #0077c8;
-}
-
-@media (max-width: 768px) {
-  .btn {
-    width: 100%;
-    max-width: 300px;
-  }
-} */
