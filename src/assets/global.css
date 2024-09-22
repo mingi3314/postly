@@ -101,16 +101,12 @@
   --p-text-muted-color: var(--p-surface-400);
   --p-text-hover-muted-color: var(--p-surface-300);
 }
-
 body {
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
 }
-
-#app {
-  margin: 20px;
-}
+/* 
 
 .btn {
   padding: 10px 20px;
@@ -149,4 +145,4 @@ body {
     width: 100%;
     max-width: 300px;
   }
-}
+} */
