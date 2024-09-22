@@ -4,17 +4,21 @@
       <LoadingComponent />
     </template>
     <template v-else-if="error">
-      <p class="error">{{ error }}</p>
-      <button class="btn btn-primary" @click="reset">다시 시도하기</button>
+      <Message severity="error" :closable="false" class="mb-4">{{
+        error
+      }}</Message>
+      <Button label="다시 시도하기" @click="reset" class="mt-4" />
     </template>
     <template v-else>
-      <h1>생성된 포스트를 확인해보세요.</h1>
+      <h1 class="text-2xl text-center m-4">생성된 포스트를 확인해보세요.</h1>
       <GeneratedPost :content="generatedPost" />
-      <div class="button-container">
-        <button class="btn btn-primary" @click="reset">처음으로</button>
-        <button class="btn btn-secondary" @click="copyPost">
-          포스트 복사하기
-        </button>
+      <div class="flex justify-center gap-4 mt-4">
+        <Button label="처음으로" @click="reset" class="p-button-secondary" />
+        <Button
+          label="포스트 복사하기"
+          @click="copyPost"
+          class="p-button-primary"
+        />
       </div>
     </template>
   </div>
@@ -26,9 +30,11 @@ import { useRouter } from "vue-router";
 import GeneratedPost from "../components/GeneratedPost.vue";
 import LoadingComponent from "../components/LoadingComponent.vue";
 import { useArticleStore } from "../stores/articleStore";
+import Button from "primevue/button";
+import Message from "primevue/message";
 
 export default defineComponent({
-  components: { GeneratedPost, LoadingComponent },
+  components: { GeneratedPost, LoadingComponent, Button, Message },
   setup() {
     const router = useRouter();
     const articleStore = useArticleStore();
@@ -71,63 +77,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.result-page {
-  max-width: 100%;
-  margin: 0;
-  padding: 20px 0;
-  overflow-x: hidden;
-}
-
-h1 {
-  font-size: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-  padding: 0 20px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 0 20px;
-}
-
-@media (max-width: 768px) {
-  .button-container {
-    flex-direction: column;
-  }
-}
-
-.btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-primary {
-  background-color: #a09eb0;
-  color: #0b0564;
-  margin-right: 10px;
-}
-
-.btn-secondary {
-  background-color: #0095f6;
-  color: white;
-}
-
-.btn:hover {
-  opacity: 0.8;
-}
-
-@media (min-width: 768px) {
-  h1 {
-    font-size: 20px;
-  }
-}
-</style>

@@ -1,31 +1,63 @@
 <template>
-  <div class="instagram-post">
-    <div class="post-header">
-      <div class="profile-picture"></div>
-      <div class="username">username</div>
-      <div class="more-options">...</div>
-    </div>
-    <div class="post-image"></div>
-    <div class="post-actions">
-      <span class="action-icon">♥</span>
-      <span class="action-icon">💬</span>
-      <span class="action-icon">▶</span>
-      <span class="action-icon save-icon">🏷</span>
-    </div>
-    <div class="likes">1,234 likes</div>
-    <div class="caption">
-      <span class="username">username</span> {{ content }}
-    </div>
-    <div class="comments">View all 123 comments</div>
-    <div class="timestamp">2 HOURS AGO</div>
-  </div>
+  <Card
+    :pt="{
+      root: {
+        class:
+          'max-w-[470px] w-full mx-auto bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg font-sans overflow-hidden',
+      },
+      body: { class: 'p-0' },
+      content: { class: 'p-0' },
+      header: { class: 'p-0 bg-transparent' },
+    }"
+  >
+    <template #header>
+      <div class="flex items-center justify-between py-2 px-3">
+        <div class="flex items-center">
+          <Avatar
+            icon="pi pi-user"
+            class="mr-3 bg-gray-200 dark:bg-gray-700"
+            size="normal"
+            shape="circle"
+          />
+          <span class="font-semibold text-sm">username</span>
+        </div>
+        <i class="pi pi-ellipsis-h text-gray-500 text-lg cursor-pointer"></i>
+      </div>
+    </template>
+    <template #content>
+      <div class="w-full aspect-square bg-gray-100 dark:bg-gray-800"></div>
+      <div class="p-3">
+        <div class="flex items-center text-2xl pb-2">
+          <i class="pi pi-heart mr-4 cursor-pointer"></i>
+          <i class="pi pi-comment mr-4 cursor-pointer"></i>
+          <i class="pi pi-send mr-4 cursor-pointer"></i>
+          <i class="pi pi-bookmark ml-auto cursor-pointer"></i>
+        </div>
+        <p class="font-semibold text-sm pb-1">1,235 likes</p>
+        <p class="text-sm leading-5">
+          <span class="font-semibold mr-1">username</span>
+          {{ content }}
+        </p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 pt-1 cursor-pointer">
+          View all 123 comments
+        </p>
+        <p class="text-[10px] text-gray-400 uppercase pt-2">2 HOURS AGO</p>
+      </div>
+    </template>
+  </Card>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
+import Card from "primevue/card";
+import Avatar from "primevue/avatar";
 
 export default defineComponent({
   name: "GeneratedPost",
+  components: {
+    Card,
+    Avatar,
+  },
   props: {
     content: {
       type: String as PropType<string>,
@@ -36,87 +68,20 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.instagram-post {
-  max-width: 600px;
-  width: 100%;
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  margin: 0 auto;
-  background-color: var(--background-color);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+:deep(.p-card) {
+  box-shadow: none;
 }
 
-.post-header {
-  display: flex;
-  align-items: center;
-  padding: 14px 16px;
+:deep(.p-card-body) {
+  padding: 0;
 }
 
-.profile-picture {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #efefef;
-  margin-right: 10px;
+:deep(.p-card-content) {
+  padding: 0;
 }
 
-.username {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.more-options {
-  margin-left: auto;
-  font-weight: bold;
-}
-
-.post-image {
-  width: 100%;
-  height: 375px;
-  background-color: #efefef;
-}
-
-.post-actions {
-  padding: 8px 16px;
-  font-size: 24px;
-}
-
-.action-icon {
-  margin-right: 16px;
-}
-
-.save-icon {
-  float: right;
-}
-
-.likes {
-  padding: 0 16px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.caption {
-  padding: 8px 16px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.comments,
-.timestamp {
-  padding: 8px 16px;
-  font-size: 14px;
-  color: #8e8e8e;
-}
-
-@media (max-width: 600px) {
-  .instagram-post {
-    max-width: 100%;
-    width: 100%;
-    margin: 0;
-    border: none;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-  }
+:deep(.p-card-header) {
+  padding: 0;
+  background-color: transparent;
 }
 </style>

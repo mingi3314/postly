@@ -33,7 +33,13 @@ export const useArticleStore = defineStore("article", {
         this.generatedPost = generatePostResponse.data.result;
       } catch (error) {
         console.error("Error generating post:", error);
-        throw error;
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.error || "포스트 생성 중 오류가 발생했습니다."
+          );
+        } else {
+          throw error;
+        }
       }
     },
   },
