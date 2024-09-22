@@ -1,22 +1,30 @@
 <template>
-  <div class="home-page">
-    <h1>Post.ly</h1>
-    <div class="search-container">
-      <input
-        v-model="topic"
-        placeholder="키워드를 입력해주세요..."
-        class="search-input"
-        @keyup.enter="generatePost"
-      />
-      <button
-        class="btn btn-primary search-button"
-        @click="generatePost"
-        :disabled="!topic"
-      >
-        <i class="fas fa-search"></i>
-      </button>
+  <div
+    class="flex flex-col justify-center items-center min-h-screen px-4 bg-gray-50"
+  >
+    <h1 class="text-5xl font-bold mb-12 text-primary-800">Post.ly</h1>
+    <div class="w-full max-w-xl mb-6">
+      <IconField class="w-full" :pt="{ root: 'relative w-full' }">
+        <InputText
+          v-model="topic"
+          placeholder="키워드를 입력해주세요..."
+          class="w-full"
+          @keyup.enter="generatePost"
+          :pt="{
+            root: 'flex-1 rounded-full h-14 w-full pl-6 pr-14 text-lg border-2 border-primary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 dark:focus:ring-primary-400/50',
+          }"
+        />
+        <InputIcon>
+          <i
+            class="pi pi-search absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl text-primary-500 cursor-pointer hover:text-primary-600"
+            @click="generatePost"
+          ></i>
+        </InputIcon>
+      </IconField>
     </div>
-    <p class="tagline">관련 뉴스를 찾아 포스트를 생성해드려요 ☺️</p>
+    <p class="text-gray-600 text-lg max-w-md text-center mt-4">
+      관련 뉴스를 찾아 포스트를 생성해드려요 ☺️
+    </p>
   </div>
 </template>
 
@@ -24,8 +32,16 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "../stores/articleStore";
+import InputText from "primevue/inputtext";
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
 
 export default defineComponent({
+  components: {
+    InputText,
+    IconField,
+    InputIcon,
+  },
   setup() {
     const topic = ref("");
     const router = useRouter();
@@ -42,87 +58,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.home-page {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 80vh;
-}
-
-.search-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.search-input {
-  width: 100%;
-  max-width: 400px;
-  padding: 12px 20px;
-  font-size: 18px;
-  border: 2px solid var(--border-color);
-  border-radius: 25px 0 0 25px;
-  transition: all 0.3s ease;
-  height: 48px;
-  box-sizing: border-box;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 5px rgba(11, 5, 100, 0.3);
-}
-
-.search-button {
-  padding: 0 20px;
-  font-size: 18px;
-  border-radius: 0 25px 25px 0;
-  margin-left: -2px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tagline {
-  font-size: 16px;
-  color: #666;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-h1 {
-  font-size: 28px;
-  margin-bottom: 30px;
-}
-
-@media (max-width: 768px) {
-  .search-container {
-    flex-direction: row;
-    align-items: center;
-    max-width: 300px;
-    margin: 0 auto 20px;
-  }
-
-  .search-input {
-    width: calc(100% - 48px);
-    max-width: none;
-    border-radius: 25px 0 0 25px;
-    margin: 0;
-  }
-
-  .search-button {
-    width: 48px;
-    max-width: none;
-    border-radius: 0 25px 25px 0;
-    margin: 0;
-    padding: 0;
-  }
-}
-</style>
