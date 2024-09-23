@@ -6,31 +6,40 @@ const API_URL = process.env.VUE_APP_API_URL;
 export const useArticleStore = defineStore("article", {
   state: () => ({
     topic: "",
+    directTexts: [] as string[],
     generatedPost: "",
   }),
   actions: {
     setTopic(newTopic: string) {
       this.topic = newTopic;
     },
+    setDirectTexts(texts: string[]) {
+      this.directTexts = texts;
+    },
     async generatePost() {
-      if (!this.topic) {
-        throw new Error("주제가 설정되지 않았습니다.");
+      if (!this.topic && this.directTexts.length === 0) {
+        throw new Error("주제 또는 텍스트가 설정되지 않았습니다.");
       }
       try {
-        // 1. Fetch news content
-        const newsContentResponse = await axios.get(
-          `${API_URL}/news-contents?query=${this.topic}`
-        );
-        const newsContents = newsContentResponse.data.newsContents;
+        let response;
+        if (this.topic) {
+          // 1. Fetch news content
+          const newsContentResponse = await axios.get(
+            `${API_URL}/news-contents?query=${this.topic}`
+          );
+          const newsContents = newsContentResponse.data.newsContents;
 
-        // 2. Generate post
-        const generatePostResponse = await axios.post(
-          `${API_URL}/generate-post`,
-          {
+          // 2. Generate post
+          response = await axios.post(`${API_URL}/generate-post`, {
             newsContents: newsContents,
-          }
-        );
-        this.generatedPost = generatePostResponse.data.result;
+          });
+        } else {
+          // Generate post from direct texts
+          response = await axios.post(`${API_URL}/generate-post`, {
+            references: this.directTexts.map((text) => ({ text })),
+          });
+        }
+        this.generatedPost = response.data.result;
       } catch (error) {
         console.error("Error generating post:", error);
         if (axios.isAxiosError(error) && error.response) {

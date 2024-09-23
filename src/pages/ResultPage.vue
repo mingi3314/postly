@@ -59,6 +59,7 @@ export default defineComponent({
 
     const reset = () => {
       articleStore.setTopic("");
+      articleStore.setDirectTexts([]);
       router.push("/");
     };
 

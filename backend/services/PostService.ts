@@ -4,9 +4,9 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { generatePostPrompt } from "../prompts/generatePostPrompt.js";
 
 export async function generatePost(
-  newsContents: { text: string }[]
+  references: { text: string }[]
 ): Promise<string> {
-  const formattedReferences = newsContents
+  const formattedReferences = references
     .map((ref) => formatReference(ref))
     .join("\n\n");
 
