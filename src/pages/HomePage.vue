@@ -3,7 +3,15 @@
     class="flex flex-col justify-center items-center min-h-screen px-4 bg-gray-50"
   >
     <h1 class="text-5xl font-bold mb-12 text-primary-800">Post.ly</h1>
-    <div class="w-full max-w-xl mb-6">
+
+    <SelectButton
+      v-model="inputMode"
+      :options="inputModes"
+      optionLabel="name"
+      class="mb-4"
+    />
+
+    <div v-if="inputMode.value === 'keyword'" class="w-full max-w-xl mb-6">
       <IconField class="w-full" :pt="{ root: 'relative w-full' }">
         <InputText
           v-model="topic"
@@ -22,8 +30,15 @@
         </InputIcon>
       </IconField>
     </div>
+
+    <DirectTextInput v-else @generate="generatePostFromText" />
+
     <p class="text-gray-600 text-lg max-w-md text-center mt-4">
-      관련 뉴스를 찾아 포스트를 생성해드려요 ☺️
+      {{
+        inputMode.value === "keyword"
+          ? "관련 뉴스를 찾아 포스트를 생성해드려요 ☺️"
+          : "입력한 텍스트를 기반으로 포스트를 생성해드려요 ☺️"
+      }}
     </p>
   </div>
 </template>
@@ -35,17 +50,27 @@ import { useArticleStore } from "../stores/articleStore";
 import InputText from "primevue/inputtext";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
+import SelectButton from "primevue/selectbutton";
+import DirectTextInput from "../components/DirectTextInput.vue";
 
 export default defineComponent({
   components: {
     InputText,
     IconField,
     InputIcon,
+    SelectButton,
+    DirectTextInput,
   },
   setup() {
     const topic = ref("");
     const router = useRouter();
     const articleStore = useArticleStore();
+
+    const inputModes = ref([
+      { name: "키워드로 생성하기", value: "keyword" },
+      { name: "직접 텍스트 입력하기", value: "text" },
+    ]);
+    const inputMode = ref(inputModes.value[0]);
 
     const generatePost = async () => {
       if (topic.value.trim()) {
@@ -54,7 +79,12 @@ export default defineComponent({
       }
     };
 
-    return { topic, generatePost };
+    const generatePostFromText = async (texts: string[]) => {
+      await articleStore.setDirectTexts(texts);
+      router.push("/result");
+    };
+
+    return { topic, generatePost, inputModes, inputMode, generatePostFromText };
   },
 });
 </script>
