@@ -31,7 +31,7 @@ export const useArticleStore = defineStore("article", {
 
           // 2. Generate post
           response = await axios.post(`${API_URL}/generate-post`, {
-            newsContents: newsContents,
+            references: newsContents,
           });
         } else {
           // Generate post from direct texts
