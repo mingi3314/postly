@@ -1,5 +1,6 @@
 <template>
   <div class="result-page">
+    <Toast />
     <template v-if="isLoading">
       <LoadingComponent />
     </template>
@@ -16,6 +17,7 @@
       <GeneratedPost :content="generatedPost" />
       <div class="flex justify-center gap-4 mt-4">
         <Button label="처음으로" @click="reset" class="p-button-secondary" />
+        <Toast position="bottom-center" group="bc" />
         <Button
           label="포스트 복사하기"
           @click="copyPost"
@@ -34,14 +36,17 @@ import LoadingComponent from "../components/LoadingComponent.vue";
 import { useArticleStore } from "../stores/articleStore";
 import Button from "primevue/button";
 import Message from "primevue/message";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
-  components: { GeneratedPost, LoadingComponent, Button, Message },
+  components: { GeneratedPost, LoadingComponent, Button, Message, Toast },
   setup() {
     const router = useRouter();
     const articleStore = useArticleStore();
     const isLoading = ref(true);
     const error = ref("");
+    const toast = useToast();
 
     onMounted(async () => {
       try {
@@ -67,7 +72,13 @@ export default defineComponent({
 
     const copyPost = () => {
       navigator.clipboard.writeText(generatedPost.value);
-      alert("포스트가 복사되었습니다.");
+      toast.add({
+        severity: "success",
+        summary: "성공",
+        detail: "포스트가 복사되었습니다.",
+        life: 3000,
+        group: "bc",
+      });
     };
 
     return {
