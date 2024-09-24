@@ -10,7 +10,9 @@
       <Button label="다시 시도하기" @click="reset" class="mt-4" />
     </template>
     <template v-else>
-      <h1 class="text-2xl text-center m-4">생성된 포스트를 확인해보세요.</h1>
+      <h1 class="text-2xl text-center m-4 text-primary-800">
+        생성된 포스트를 확인해보세요.
+      </h1>
       <GeneratedPost :content="generatedPost" />
       <div class="flex justify-center gap-4 mt-4">
         <Button label="처음으로" @click="reset" class="p-button-secondary" />

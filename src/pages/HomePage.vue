@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col justify-center items-center min-h-screen px-4 bg-gray-50"
+    class="flex flex-col justify-center items-center min-h-screen px-4 bg-surface-50"
   >
     <h1 class="text-5xl font-bold mb-12 text-primary-800">Post.ly</h1>
 
@@ -33,7 +33,7 @@
 
     <DirectTextInput v-else @generate="generatePostFromText" />
 
-    <p class="text-gray-600 text-lg max-w-md text-center mt-4">
+    <p class="text-surface-600 text-lg max-w-md text-center mt-4">
       {{
         inputMode.value === "keyword"
           ? "관련 뉴스를 찾아 포스트를 생성해드려요 ☺️"

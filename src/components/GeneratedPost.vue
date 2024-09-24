@@ -3,7 +3,7 @@
     :pt="{
       root: {
         class:
-          'max-w-[470px] w-full mx-auto bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg font-sans overflow-hidden',
+          'max-w-[470px] w-full mx-auto bg-surface-0 dark:bg-surface-900 border border-surface-300 dark:border-surface-700 rounded-lg font-sans overflow-hidden',
       },
       body: { class: 'p-0' },
       content: { class: 'p-0' },
@@ -15,17 +15,19 @@
         <div class="flex items-center">
           <Avatar
             icon="pi pi-user"
-            class="mr-3 bg-gray-200 dark:bg-gray-700"
+            class="mr-3 bg-surface-200 dark:bg-surface-700"
             size="normal"
             shape="circle"
           />
-          <span class="font-semibold text-sm">username</span>
+          <span class="font-semibold text-sm text-surface-800">username</span>
         </div>
-        <i class="pi pi-ellipsis-h text-gray-500 text-lg cursor-pointer"></i>
+        <i class="pi pi-ellipsis-h text-surface-500 text-lg cursor-pointer"></i>
       </div>
     </template>
     <template #content>
-      <div class="w-full aspect-square bg-gray-100 dark:bg-gray-800"></div>
+      <div
+        class="w-full aspect-square bg-surface-100 dark:bg-surface-800"
+      ></div>
       <div class="p-3">
         <div class="flex items-center text-2xl pb-2">
           <i class="pi pi-heart mr-4 cursor-pointer"></i>
@@ -38,10 +40,12 @@
           <span class="font-semibold mr-1">username</span>
           {{ content }}
         </p>
-        <p class="text-sm text-gray-500 dark:text-gray-400 pt-1 cursor-pointer">
+        <p
+          class="text-sm text-surface-500 dark:text-surface-400 pt-1 cursor-pointer"
+        >
           View all 123 comments
         </p>
-        <p class="text-[10px] text-gray-400 uppercase pt-2">2 HOURS AGO</p>
+        <p class="text-[10px] text-surface-400 uppercase pt-2">2 HOURS AGO</p>
       </div>
     </template>
   </Card>

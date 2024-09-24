@@ -13,27 +13,22 @@
 }
 
 :root {
-  --primary-color: #0b0564;
-  --secondary-color: #0095f6;
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --border-color: #dbdbdb;
   --font-family: "S-CoreDream-3Light", sans-serif;
 }
 
 /* Primary and Surface Palettes */
 :root {
-  --p-primary-50: var(--p-surface-50);
-  --p-primary-100: var(--p-surface-100);
-  --p-primary-200: var(--p-surface-200);
-  --p-primary-300: var(--p-surface-300);
-  --p-primary-400: var(--p-surface-400);
-  --p-primary-500: var(--p-surface-500);
-  --p-primary-600: var(--p-surface-600);
-  --p-primary-700: var(--p-surface-700);
-  --p-primary-800: var(--p-surface-800);
-  --p-primary-900: var(--p-surface-900);
-  --p-primary-950: var(--p-surface-950);
+  --p-primary-50: #e8f5e9;
+  --p-primary-100: #c8e6c9;
+  --p-primary-200: #a5d6a7;
+  --p-primary-300: #81c784;
+  --p-primary-400: #66bb6a;
+  --p-primary-500: #4caf50;
+  --p-primary-600: #43a047;
+  --p-primary-700: #388e3c;
+  --p-primary-800: #2e7d32;
+  --p-primary-900: #1b5e20;
+  --p-primary-950: #0d3b12;
   --p-surface-0: #ffffff;
   --p-surface-50: #f8fafc;
   --p-surface-100: #f1f5f9;
@@ -46,7 +41,9 @@
   --p-surface-800: #1e293b;
   --p-surface-900: #0f172a;
   --p-surface-950: #020617;
-  --p-content-border-radius: 6px;
+  --p-content-border-radius: 8px;
+  --p-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --p-transition: all 0.3s ease;
 }
 
 /* Light Mode */
@@ -84,17 +81,9 @@
   --p-content-border-color: var(--p-surface-700);
   --p-content-hover-background: var(--p-surface-800);
   --p-content-hover-color: var(--p-surface-0);
-  --p-highlight-background: color-mix(
-    in srgb,
-    var(--p-primary-400),
-    transparent 84%
-  );
+  --p-highlight-background: rgba(102, 187, 106, 0.1);
   --p-highlight-color: rgba(255, 255, 255, 0.87);
-  --p-highlight-focus-background: color-mix(
-    in srgb,
-    var(--p-primary-400),
-    transparent 76%
-  );
+  --p-highlight-focus-background: rgba(102, 187, 106, 0.2);
   --p-highlight-focus-color: rgba(255, 255, 255, 0.87);
   --p-text-color: var(--p-surface-0);
   --p-text-hover-color: var(--p-surface-0);

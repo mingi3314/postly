@@ -4,7 +4,7 @@
       <Panel :toggleable="true" :pt="panelPt">
         <template #header>
           <div class="flex justify-between items-center w-full">
-            <span class="text-lg font-semibold"
+            <span class="text-lg font-semibold text-primary-800"
               >텍스트 소스 {{ index + 1 }}</span
             >
             <Button
@@ -31,7 +31,7 @@
             class="w-full mb-2"
             :pt="textareaPt"
           />
-          <small class="text-gray-500 block text-right">
+          <small class="text-surface-500 block text-right">
             {{ texts[index].length }} / 3000 글자
           </small>
         </div>
@@ -71,9 +71,9 @@ export default defineComponent({
 
     const panelPt = {
       root: {
-        class: "shadow-md rounded-lg overflow-hidden border border-gray-200",
+        class: "shadow-md rounded-lg overflow-hidden border border-surface-200",
       },
-      header: { class: "bg-gray-50 p-4 border-b border-gray-200" },
+      header: { class: "bg-surface-50 p-4 border-b border-surface-200" },
       content: { class: "bg-white" },
       toggleableContent: { class: "transition-all duration-300 ease-in-out" },
     };
@@ -81,7 +81,7 @@ export default defineComponent({
     const textareaPt = {
       root: {
         class:
-          "w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200",
+          "w-full p-3 border border-surface-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200",
       },
     };
 
