@@ -2,7 +2,7 @@
   <div class="result-page">
     <Toast />
     <template v-if="isLoading">
-      <LoadingComponent />
+      <LoadingComponent :stage="loadingStage" />
     </template>
     <template v-else-if="error">
       <Message severity="error" :closable="false" class="mb-4">{{
@@ -46,6 +46,7 @@ export default defineComponent({
     const articleStore = useArticleStore();
     const toast = useToast();
     const isLoading = ref(true);
+    const loadingStage = ref("references");
     const error = ref("");
 
     const generatedPost = computed(() => articleStore.generatedPost || "");
@@ -69,8 +70,15 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
+        loadingStage.value = "references";
         const references = await articleStore.getReferences();
+
+        loadingStage.value = "generating";
         await articleStore.createPost(references);
+
+        loadingStage.value = "finalizing";
+        // 최종 결과를 준비하는 데 약간의 시간이 걸린다고 가정
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (e: unknown) {
         error.value =
           e instanceof Error
@@ -84,6 +92,7 @@ export default defineComponent({
     return {
       generatedPost,
       isLoading,
+      loadingStage,
       error,
       reset,
       copyPost,
