@@ -70,22 +70,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-:deep(.p-card) {
-  box-shadow: none;
-}
-
-:deep(.p-card-body) {
-  padding: 0;
-}
-
-:deep(.p-card-content) {
-  padding: 0;
-}
-
-:deep(.p-card-header) {
-  padding: 0;
-  background-color: transparent;
-}
-</style>
