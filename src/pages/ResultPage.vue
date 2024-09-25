@@ -31,36 +31,22 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useArticleStore } from "../stores/articleStore";
+import { useToast } from "primevue/usetoast";
 import GeneratedPost from "../components/GeneratedPost.vue";
 import LoadingComponent from "../components/LoadingComponent.vue";
-import { useArticleStore } from "../stores/articleStore";
 import Button from "primevue/button";
 import Message from "primevue/message";
 import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
 
 export default defineComponent({
   components: { GeneratedPost, LoadingComponent, Button, Message, Toast },
   setup() {
     const router = useRouter();
     const articleStore = useArticleStore();
+    const toast = useToast();
     const isLoading = ref(true);
     const error = ref("");
-    const toast = useToast();
-
-    onMounted(async () => {
-      try {
-        await articleStore.generatePost();
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          error.value = e.message;
-        } else {
-          error.value = "포스트 생성 중 오류가 발생했습니다.";
-        }
-      } finally {
-        isLoading.value = false;
-      }
-    });
 
     const generatedPost = computed(() => articleStore.generatedPost || "");
 
@@ -80,6 +66,19 @@ export default defineComponent({
         group: "bc",
       });
     };
+
+    onMounted(async () => {
+      try {
+        await articleStore.generatePost();
+      } catch (e: unknown) {
+        error.value =
+          e instanceof Error
+            ? e.message
+            : "포스트 생성 중 오류가 발생했습니다.";
+      } finally {
+        isLoading.value = false;
+      }
+    });
 
     return {
       generatedPost,
