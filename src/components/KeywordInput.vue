@@ -5,11 +5,14 @@
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         :placeholder="placeholder"
-        class="w-full keyword-input"
+        class="w-full flex-1 rounded-full h-14 pl-6 pr-14 text-lg border-2 border-primary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 dark:focus:ring-primary-400/50"
         @keyup.enter="$emit('generate')"
       />
       <InputIcon>
-        <i class="pi pi-search search-icon" @click="$emit('generate')"></i>
+        <i
+          class="pi pi-search absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl text-primary-500 cursor-pointer hover:text-primary-600"
+          @click="$emit('generate')"
+        ></i>
       </InputIcon>
     </IconField>
   </div>
@@ -40,13 +43,3 @@ export default defineComponent({
   emits: ["update:modelValue", "generate"],
 });
 </script>
-
-<style scoped>
-.keyword-input {
-  @apply flex-1 rounded-full h-14 w-full pl-6 pr-14 text-lg border-2 border-primary-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50 dark:focus:ring-primary-400/50;
-}
-
-.search-icon {
-  @apply absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl text-primary-500 cursor-pointer hover:text-primary-600;
-}
-</style>
