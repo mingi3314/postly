@@ -69,7 +69,8 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        await articleStore.generatePost();
+        const references = await articleStore.getReferences();
+        await articleStore.createPost(references);
       } catch (e: unknown) {
         error.value =
           e instanceof Error
