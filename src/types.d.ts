@@ -17,3 +17,7 @@ export interface NewsItem {
   description: string;
   pubDate: string;
 }
+
+export interface ParsedContent {
+  text: string;
+}

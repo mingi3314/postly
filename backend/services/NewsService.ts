@@ -1,142 +1,86 @@
-import axios from "axios";
-import * as cheerio from "cheerio";
-import puppeteer, { Browser } from "puppeteer";
-import { NewsResponse, NewsItem } from "../../src/types";
+import { NewsAPI } from "../modules/NewsAPI.js";
+import { WebScraper } from "../modules/WebScraper.js";
+import { ContentParser } from "../modules/ContentParser.js";
+import { NewsItem, ParsedContent } from "../../src/types";
+import {
+  MAX_NEWS_ITEMS,
+  NAVER_ENTERTAIN_URL,
+  NAVER_SPORTS_URL,
+  NAVER_NEWS_URL,
+} from "../config/newsConfig.js";
+import { NewsServiceError } from "../errors/NewsServiceError.js";
 
-const NAVER_API_URL = "https://openapi.naver.com/v1/search/news.json";
-const NAVER_CLIENT_ID = process.env.VUE_APP_NAVER_CLIENT_ID;
-const NAVER_CLIENT_SECRET = process.env.VUE_APP_NAVER_CLIENT_SECRET;
+export class NewsService {
+  constructor(
+    private newsAPI: NewsAPI,
+    private webScraper: WebScraper,
+    private contentParser: ContentParser
+  ) {}
 
-const NAVER_NEWS_URL = "https://n.news.naver.com/";
-const NAVER_ENTERTAIN_URL = "https://m.entertain.naver.com/";
-const NAVER_SPORTS_URL = "https://m.sports.naver.com/";
+  async fetchNewsContent(topic: string): Promise<ParsedContent[]> {
+    try {
+      const newsItems = await this.newsAPI.searchNews(topic);
+      const filteredNewsItems = this.filterNewsItems(newsItems);
 
-export async function fetchNewsContent(
-  topic: string
-): Promise<{ text: string }[]> {
-  const newsItems = await searchNews(topic);
-  const filteredNewsItems = filterNewsItems(newsItems);
+      if (filteredNewsItems.length === 0) {
+        throw new NewsServiceError(
+          "해당 주제에 대한 네이버 뉴스를 찾을 수 없습니다. 다른 주제로 시도해주세요."
+        );
+      }
 
-  if (filteredNewsItems.length === 0) {
-    throw new Error(
-      "해당 주제에 대한 네이버 뉴스를 찾을 수 없습니다. 다른 주제로 시도해주세요."
-    );
-  }
+      const contents = await Promise.all(
+        filteredNewsItems.map((item) =>
+          this.fetchAndParseNewsContent(item.link)
+        )
+      );
 
-  const needsBrowser = filteredNewsItems.some(
-    (item) =>
-      item.link.startsWith(NAVER_ENTERTAIN_URL) ||
-      item.link.startsWith(NAVER_SPORTS_URL)
-  );
+      const validContents = contents.filter(
+        (content) => content.text.length > 0
+      );
 
-  let browser: Browser | null = null;
-  try {
-    if (needsBrowser) {
-      browser = await puppeteer.launch();
-    }
+      if (validContents.length === 0) {
+        throw new NewsServiceError(
+          "뉴스 본문을 가져오는데 실패했습니다. 다시 시도해주세요."
+        );
+      }
 
-    const contents = await Promise.all(
-      filteredNewsItems.map((item) =>
-        fetchAndParseNewsContent(item.link, browser)
-      )
-    );
-
-    const validContents = contents
-      .filter((content) => content.length > 0)
-      .map((content) => ({ text: content }));
-
-    if (validContents.length === 0) {
-      throw new Error(
-        "뉴스 본문을 가져오는데 실패했습니다. 다시 시도해주세요."
+      return validContents;
+    } catch (error) {
+      if (error instanceof NewsServiceError) {
+        throw error;
+      }
+      throw new NewsServiceError(
+        "뉴스 콘텐츠를 가져오는 중 오류가 발생했습니다."
       );
     }
-
-    return validContents;
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
   }
-}
 
-async function searchNews(query: string): Promise<NewsItem[]> {
-  try {
-    const response = await axios.get<NewsResponse>(NAVER_API_URL, {
-      params: {
-        query: query,
-        display: 30,
-        sort: "sim",
-      },
-      headers: {
-        "X-Naver-Client-Id": NAVER_CLIENT_ID,
-        "X-Naver-Client-Secret": NAVER_CLIENT_SECRET,
-      },
-    });
-
-    return response.data.items;
-  } catch (error) {
-    console.error("Failed to fetch news:", error);
-    throw new Error("Failed to fetch news");
+  private filterNewsItems(newsItems: NewsItem[]): NewsItem[] {
+    return newsItems
+      .filter((item) => this.isValidNewsUrl(item.link))
+      .slice(0, MAX_NEWS_ITEMS);
   }
-}
 
-function filterNewsItems(newsItems: NewsItem[]): NewsItem[] {
-  return newsItems
-    .filter(
-      (item: NewsItem) =>
-        item.link.startsWith(NAVER_NEWS_URL) ||
-        item.link.startsWith(NAVER_ENTERTAIN_URL) ||
-        item.link.startsWith(NAVER_SPORTS_URL)
-    )
-    .slice(0, 3);
-}
-
-async function fetchAndParseNewsContent(
-  url: string,
-  browser: Browser | null
-): Promise<string> {
-  try {
-    const htmlContent = await fetchHtmlContent(url, browser);
-    return parseNewsContent(url, htmlContent);
-  } catch (error) {
-    console.error(`Failed to fetch or parse news content from ${url}:`, error);
-    return "";
+  private isValidNewsUrl(url: string): boolean {
+    return [NAVER_NEWS_URL, NAVER_ENTERTAIN_URL, NAVER_SPORTS_URL].some(
+      (validUrl) => url.startsWith(validUrl)
+    );
   }
-}
 
-async function fetchHtmlContent(
-  url: string,
-  browser: Browser | null
-): Promise<string> {
-  if (url.startsWith(NAVER_ENTERTAIN_URL) || url.startsWith(NAVER_SPORTS_URL)) {
-    if (!browser) {
-      throw new Error("Browser instance is required for this URL");
-    }
-    const page = await browser.newPage();
+  private async fetchAndParseNewsContent(url: string): Promise<ParsedContent> {
     try {
-      await page.goto(url, { waitUntil: "networkidle0" });
-      return await page.content();
-    } finally {
-      await page.close();
+      const htmlContent = await this.webScraper.fetchHtmlContent(url);
+      const parsedContent = this.contentParser.parseNewsContent(
+        url,
+        htmlContent
+      );
+      return { text: parsedContent };
+    } catch (error) {
+      console.error(
+        `Failed to fetch or parse news content from ${url}:`,
+        error
+      );
+      return { text: "" };
     }
-  } else {
-    const response = await axios.get(url);
-    return response.data;
   }
-}
-
-function parseNewsContent(url: string, htmlContent: string): string {
-  const $ = cheerio.load(htmlContent);
-  let content = "";
-
-  if (url.startsWith(NAVER_NEWS_URL)) {
-    content = $("#dic_area").text();
-  } else if (
-    url.startsWith(NAVER_ENTERTAIN_URL) ||
-    url.startsWith(NAVER_SPORTS_URL)
-  ) {
-    content = $("div._article_content").text();
-  }
-
-  return content.trim();
 }
