@@ -29,71 +29,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
-import { useArticleStore } from "../stores/articleStore";
-import { useToast } from "primevue/usetoast";
+import { defineComponent, onMounted } from "vue";
 import GeneratedPost from "../components/GeneratedPost.vue";
 import LoadingComponent from "../components/LoadingComponent.vue";
 import Button from "primevue/button";
 import Message from "primevue/message";
 import Toast from "primevue/toast";
+import { usePostGeneration } from "../composables/usePostGeneration";
 
 export default defineComponent({
+  name: "ResultPage",
   components: { GeneratedPost, LoadingComponent, Button, Message, Toast },
   setup() {
-    const router = useRouter();
-    const articleStore = useArticleStore();
-    const toast = useToast();
-    const isLoading = ref(true);
-    const loadingStage = ref("references");
-    const error = ref("");
-
-    const generatedPost = computed(() => articleStore.generatedPost || "");
-
-    const reset = () => {
-      articleStore.setTopic("");
-      articleStore.setDirectTexts([]);
-      router.push("/");
-    };
-
-    const copyPost = () => {
-      navigator.clipboard.writeText(generatedPost.value);
-      toast.add({
-        severity: "success",
-        summary: "성공",
-        detail: "포스트가 복사되었습니다.",
-        life: 3000,
-        group: "bc",
-      });
-    };
-
-    onMounted(async () => {
-      try {
-        loadingStage.value = "references";
-        const references = await articleStore.getReferences();
-
-        loadingStage.value = "generating";
-        await articleStore.createPost(references);
-
-        loadingStage.value = "finalizing";
-        // 최종 결과를 준비하는 데 약간의 시간이 걸린다고 가정
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch (e: unknown) {
-        error.value =
-          e instanceof Error
-            ? e.message
-            : "포스트 생성 중 오류가 발생했습니다.";
-      } finally {
-        isLoading.value = false;
-      }
-    });
-
-    return {
-      generatedPost,
+    const {
       isLoading,
       loadingStage,
       error,
+      generatedPost,
+      reset,
+      copyPost,
+      generatePost,
+    } = usePostGeneration();
+
+    onMounted(generatePost);
+
+    return {
+      isLoading,
+      loadingStage,
+      error,
+      generatedPost,
       reset,
       copyPost,
     };
