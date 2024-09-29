@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import type { Reference } from "../types";
 
 const API_URL = process.env.VUE_APP_API_URL;
 
@@ -7,7 +8,6 @@ export const useArticleStore = defineStore("article", {
   state: () => ({
     topic: "",
     directTexts: [] as string[],
-    generatedPost: "",
   }),
   actions: {
     setTopic(newTopic: string) {
@@ -16,7 +16,7 @@ export const useArticleStore = defineStore("article", {
     setDirectTexts(texts: string[]) {
       this.directTexts = texts;
     },
-    async getReferences() {
+    async getReferences(): Promise<Reference[]> {
       if (!this.topic && this.directTexts.length === 0) {
         throw new Error("주제 또는 텍스트가 설정되지 않았습니다.");
       }
@@ -29,11 +29,11 @@ export const useArticleStore = defineStore("article", {
         return this.directTexts.map((text) => ({ text }));
       }
     },
-    async createPost(references: { text: string }[]) {
+    async createPost(references: Reference[]): Promise<string> {
       const response = await axios.post(`${API_URL}/generate-post`, {
         references,
       });
-      this.generatedPost = response.data.result;
+      return response.data.result;
     },
   },
 });

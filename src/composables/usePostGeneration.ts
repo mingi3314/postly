@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "../stores/articleStore";
 import { useToast } from "primevue/usetoast";
@@ -11,12 +11,12 @@ export function usePostGeneration() {
   const isLoading = ref(true);
   const loadingStage = ref("references");
   const error = ref("");
-
-  const generatedPost = computed(() => articleStore.generatedPost || "");
+  const generatedPost = ref("");
 
   const reset = () => {
     articleStore.setTopic("");
     articleStore.setDirectTexts([]);
+    generatedPost.value = "";
     router.push("/");
   };
 
@@ -37,7 +37,7 @@ export function usePostGeneration() {
       const references = await articleStore.getReferences();
 
       loadingStage.value = "generating";
-      await articleStore.createPost(references);
+      generatedPost.value = await articleStore.createPost(references);
 
       loadingStage.value = "finalizing";
       await new Promise((resolve) => setTimeout(resolve, 1000));
