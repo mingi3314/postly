@@ -2,7 +2,7 @@
   <div class="result-page">
     <Toast />
     <template v-if="isLoading">
-      <LoadingComponent :stage="loadingStage" />
+      <LoadingComponent :stage="loadingStage" :progress="progressPercentage" />
     </template>
     <template v-else-if="error">
       <Message severity="error" :closable="false" class="mb-4">{{
@@ -17,14 +17,19 @@
       <GeneratedPost :content="generatedPost" />
       <div class="flex justify-center gap-4 mt-4">
         <Button label="처음으로" @click="reset" class="p-button-secondary" />
-        <Toast position="bottom-center" group="bc" />
         <Button
           label="포스트 복사하기"
           @click="copyPost"
           class="p-button-primary"
         />
+        <Button
+          label="다시 생성하기"
+          @click="regeneratePost"
+          class="p-button-info"
+        />
       </div>
     </template>
+    <Toast position="bottom-center" group="bc" />
   </div>
 </template>
 
@@ -36,6 +41,7 @@ import Button from "primevue/button";
 import Message from "primevue/message";
 import Toast from "primevue/toast";
 import { usePostGeneration } from "../composables/usePostGeneration";
+import { useLoadingState } from "../composables/useLoadingState";
 
 export default defineComponent({
   name: "ResultPage",
@@ -49,7 +55,10 @@ export default defineComponent({
       reset,
       copyPost,
       generatePost,
+      regeneratePost,
     } = usePostGeneration();
+
+    const { progressPercentage } = useLoadingState();
 
     onMounted(generatePost);
 
@@ -60,6 +69,8 @@ export default defineComponent({
       generatedPost,
       reset,
       copyPost,
+      regeneratePost,
+      progressPercentage,
     };
   },
 });
