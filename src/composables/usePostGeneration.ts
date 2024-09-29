@@ -2,21 +2,32 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useArticleStore } from "../stores/articleStore";
 import { useToast } from "primevue/usetoast";
+import { useLoadingState } from "./useLoadingState";
+import type { Reference } from "../types";
 
 export function usePostGeneration() {
   const router = useRouter();
   const articleStore = useArticleStore();
   const toast = useToast();
+  const {
+    isLoading,
+    loadingStage,
+    error,
+    setLoading,
+    setLoadingStage,
+    setError,
+    resetError,
+  } = useLoadingState();
 
-  const isLoading = ref(true);
-  const loadingStage = ref("references");
-  const error = ref("");
   const generatedPost = ref("");
+  const references = ref<Reference[]>([]);
 
   const reset = () => {
     articleStore.setTopic("");
     articleStore.setDirectTexts([]);
     generatedPost.value = "";
+    references.value = [];
+    resetError();
     router.push("/");
   };
 
@@ -31,23 +42,31 @@ export function usePostGeneration() {
     });
   };
 
-  const generatePost = async () => {
+  const generatePost = async (useExistingReferences = false) => {
     try {
-      loadingStage.value = "references";
-      const references = await articleStore.getReferences();
+      setLoading(true);
+      resetError();
 
-      loadingStage.value = "generating";
-      generatedPost.value = await articleStore.createPost(references);
+      if (!useExistingReferences || references.value.length === 0) {
+        setLoadingStage("references");
+        references.value = await articleStore.getReferences();
+      }
 
-      loadingStage.value = "finalizing";
+      setLoadingStage("generating");
+      generatedPost.value = await articleStore.createPost(references.value);
+
+      setLoadingStage("finalizing");
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (e: unknown) {
-      error.value =
-        e instanceof Error ? e.message : "포스트 생성 중 오류가 발생했습니다.";
+      setError(
+        e instanceof Error ? e.message : "포스트 생성 중 오류가 발생했습니다."
+      );
     } finally {
-      isLoading.value = false;
+      setLoading(false);
     }
   };
+
+  const regeneratePost = () => generatePost(true);
 
   return {
     isLoading,
@@ -57,5 +76,6 @@ export function usePostGeneration() {
     reset,
     copyPost,
     generatePost,
+    regeneratePost,
   };
 }

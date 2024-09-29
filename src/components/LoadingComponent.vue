@@ -10,9 +10,7 @@
         animationDuration=".5s"
       />
       <div class="absolute inset-0 flex items-center justify-center">
-        <span class="text-2xl font-bold text-primary-500"
-          >{{ progressPercentage }}%</span
-        >
+        <span class="text-2xl font-bold text-primary-500">{{ progress }}%</span>
       </div>
     </div>
     <p class="mt-6 text-xl font-semibold text-primary-800">
@@ -22,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, onUnmounted } from "vue";
+import { defineComponent, ref, watch, onUnmounted } from "vue";
 import ProgressSpinner from "primevue/progressspinner";
 
 export default defineComponent({
@@ -30,32 +28,30 @@ export default defineComponent({
   components: { ProgressSpinner },
   props: {
     stage: {
-      type: String,
+      type: String as () => "references" | "generating" | "finalizing",
+      required: true,
+    },
+    progress: {
+      type: Number,
       required: true,
     },
   },
   setup(props) {
-    const progress = ref(0);
     const loadingMessage = ref("");
     const displayedMessage = ref("");
-    const progressPercentage = ref(0);
 
     const updateLoadingState = (stage: string) => {
       switch (stage) {
         case "references":
-          progress.value = 33;
           loadingMessage.value = "참조 자료를 수집하는 중...";
           break;
         case "generating":
-          progress.value = 66;
           loadingMessage.value = "포스트를 생성하는 중...";
           break;
         case "finalizing":
-          progress.value = 100;
           loadingMessage.value = "최종 결과를 준비하는 중...";
           break;
         default:
-          progress.value = 0;
           loadingMessage.value = "준비 중...";
       }
     };
@@ -81,38 +77,12 @@ export default defineComponent({
       startTypingEffect();
     });
 
-    // Progress animation
-    let progressInterval: number;
-    const animateProgress = () => {
-      progressInterval = window.setInterval(() => {
-        if (progressPercentage.value < progress.value) {
-          progressPercentage.value++;
-        } else {
-          clearInterval(progressInterval);
-        }
-      }, 20);
-    };
-
-    watch(progress, () => {
-      clearInterval(progressInterval);
-      animateProgress();
-    });
-
-    onMounted(() => {
-      startTypingEffect();
-      animateProgress();
-    });
-
     onUnmounted(() => {
       clearInterval(typingInterval);
-      clearInterval(progressInterval);
     });
 
     return {
-      progress,
-      loadingMessage,
       displayedMessage,
-      progressPercentage,
     };
   },
 });
