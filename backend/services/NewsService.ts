@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import puppeteer, { Browser } from "puppeteer";
 import { NewsResponse, NewsItem } from "../../src/types";
 
 const NAVER_API_URL = "https://openapi.naver.com/v1/search/news.json";
@@ -22,19 +23,40 @@ export async function fetchNewsContent(
     );
   }
 
-  const contents = await Promise.all(
-    filteredNewsItems.map((item) => fetchAndParseNewsContent(item.link))
+  const needsBrowser = filteredNewsItems.some(
+    (item) =>
+      item.link.startsWith(NAVER_ENTERTAIN_URL) ||
+      item.link.startsWith(NAVER_SPORTS_URL)
   );
 
-  const validContents = contents
-    .filter((content) => content.length > 0)
-    .map((content) => ({ text: content }));
+  let browser: Browser | null = null;
+  try {
+    if (needsBrowser) {
+      browser = await puppeteer.launch();
+    }
 
-  if (validContents.length === 0) {
-    throw new Error("뉴스 본문을 가져오는데 실패했습니다. 다시 시도해주세요.");
+    const contents = await Promise.all(
+      filteredNewsItems.map((item) =>
+        fetchAndParseNewsContent(item.link, browser)
+      )
+    );
+
+    const validContents = contents
+      .filter((content) => content.length > 0)
+      .map((content) => ({ text: content }));
+
+    if (validContents.length === 0) {
+      throw new Error(
+        "뉴스 본문을 가져오는데 실패했습니다. 다시 시도해주세요."
+      );
+    }
+
+    return validContents;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
-
-  return validContents;
 }
 
 async function searchNews(query: string): Promise<NewsItem[]> {
@@ -69,9 +91,12 @@ function filterNewsItems(newsItems: NewsItem[]): NewsItem[] {
     .slice(0, 3);
 }
 
-async function fetchAndParseNewsContent(url: string): Promise<string> {
+async function fetchAndParseNewsContent(
+  url: string,
+  browser: Browser | null
+): Promise<string> {
   try {
-    const htmlContent = await fetchHtmlContent(url);
+    const htmlContent = await fetchHtmlContent(url, browser);
     return parseNewsContent(url, htmlContent);
   } catch (error) {
     console.error(`Failed to fetch or parse news content from ${url}:`, error);
@@ -79,14 +104,30 @@ async function fetchAndParseNewsContent(url: string): Promise<string> {
   }
 }
 
-async function fetchHtmlContent(url: string): Promise<string> {
-  const response = await axios.get(url);
-  return response.data;
+async function fetchHtmlContent(
+  url: string,
+  browser: Browser | null
+): Promise<string> {
+  if (url.startsWith(NAVER_ENTERTAIN_URL) || url.startsWith(NAVER_SPORTS_URL)) {
+    if (!browser) {
+      throw new Error("Browser instance is required for this URL");
+    }
+    const page = await browser.newPage();
+    try {
+      await page.goto(url, { waitUntil: "networkidle0" });
+      return await page.content();
+    } finally {
+      await page.close();
+    }
+  } else {
+    const response = await axios.get(url);
+    return response.data;
+  }
 }
 
 function parseNewsContent(url: string, htmlContent: string): string {
   const $ = cheerio.load(htmlContent);
-  let content = "a";
+  let content = "";
 
   if (url.startsWith(NAVER_NEWS_URL)) {
     content = $("#dic_area").text();
@@ -96,8 +137,6 @@ function parseNewsContent(url: string, htmlContent: string): string {
   ) {
     content = $("div._article_content").text();
   }
-
-  console.log(`content: ${content} for url: ${url}`);
 
   return content.trim();
 }
