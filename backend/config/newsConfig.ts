@@ -6,5 +6,9 @@ export const NAVER_NEWS_URL = "https://n.news.naver.com/";
 export const NAVER_ENTERTAIN_URL = "https://m.entertain.naver.com/";
 export const NAVER_SPORTS_URL = "https://m.sports.naver.com/";
 
-export const MAX_NEWS_ITEMS = 3;
-export const NEWS_DISPLAY_COUNT = 30;
+export const MAX_NEWS_ITEMS = parseInt(
+  process.env.VUE_APP_MAX_NEWS_ITEMS || "3"
+);
+export const NEWS_DISPLAY_COUNT = parseInt(
+  process.env.VUE_APP_NEWS_DISPLAY_COUNT || "30"
+);
