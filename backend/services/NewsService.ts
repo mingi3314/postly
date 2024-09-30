@@ -76,11 +76,9 @@ export class NewsService {
       );
       return { text: parsedContent };
     } catch (error) {
-      console.error(
-        `Failed to fetch or parse news content from ${url}:`,
-        error
-      );
-      return { text: "" };
+      const errorMessage = `Failed to fetch or parse news content from ${url}:\n${error}`;
+      console.error(errorMessage);
+      throw new NewsServiceError(errorMessage);
     }
   }
 }
