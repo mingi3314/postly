@@ -1,5 +1,6 @@
 import axios from "axios";
-import puppeteer, { Browser } from "puppeteer";
+import puppeteer, { Browser } from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import { NAVER_ENTERTAIN_URL, NAVER_SPORTS_URL } from "../config/newsConfig.js";
 import { WebScraperError } from "../errors/WebScraperError.js";
 
@@ -26,7 +27,12 @@ export class WebScraper {
 
   private async fetchWithPuppeteer(url: string): Promise<string> {
     if (!this.browser) {
-      this.browser = await puppeteer.launch();
+      this.browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
     }
     const page = await this.browser.newPage();
     try {
