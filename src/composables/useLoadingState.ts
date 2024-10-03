@@ -1,14 +1,15 @@
+import { LoadingStage } from "@/types";
 import { ref, computed } from "vue";
 
 export function useLoadingState() {
   const isLoading = ref(false);
-  const loadingStage = ref<"references" | "generating" | "finalizing">(
-    "references"
-  );
+  const loadingStage = ref<LoadingStage>("initializing");
   const error = ref("");
 
   const progressPercentage = computed(() => {
     switch (loadingStage.value) {
+      case "initializing":
+        return 0;
       case "references":
         return 33;
       case "generating":
@@ -24,9 +25,7 @@ export function useLoadingState() {
     isLoading.value = loading;
   };
 
-  const setLoadingStage = (
-    stage: "references" | "generating" | "finalizing"
-  ) => {
+  const setLoadingStage = (stage: LoadingStage) => {
     loadingStage.value = stage;
   };
 

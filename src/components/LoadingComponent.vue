@@ -20,15 +20,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onUnmounted } from "vue";
+import { defineComponent, ref, watch, onMounted } from "vue";
 import ProgressSpinner from "primevue/progressspinner";
+import type { LoadingStage } from "@/types";
 
 export default defineComponent({
   name: "LoadingComponent",
   components: { ProgressSpinner },
   props: {
     stage: {
-      type: String as () => "references" | "generating" | "finalizing",
+      type: String as () => LoadingStage,
       required: true,
     },
     progress: {
@@ -40,7 +41,7 @@ export default defineComponent({
     const loadingMessage = ref("");
     const displayedMessage = ref("");
 
-    const updateLoadingState = (stage: string) => {
+    const updateLoadingState = (stage: LoadingStage) => {
       switch (stage) {
         case "references":
           loadingMessage.value = "참조 자료를 수집하는 중...";
@@ -54,32 +55,20 @@ export default defineComponent({
         default:
           loadingMessage.value = "준비 중...";
       }
+      displayedMessage.value = loadingMessage.value;
     };
 
-    watch(() => props.stage, updateLoadingState, { immediate: true });
-
-    // Typing effect
-    let typingInterval: number;
-    const startTypingEffect = () => {
-      let i = 0;
-      typingInterval = window.setInterval(() => {
-        if (i <= loadingMessage.value.length) {
-          displayedMessage.value = loadingMessage.value.slice(0, i);
-          i++;
-        } else {
-          clearInterval(typingInterval);
-        }
-      }, 50);
-    };
-
-    watch(loadingMessage, () => {
-      clearInterval(typingInterval);
-      startTypingEffect();
+    // 초기 로딩 메시지 설정
+    onMounted(() => {
+      updateLoadingState(props.stage);
     });
 
-    onUnmounted(() => {
-      clearInterval(typingInterval);
-    });
+    watch(
+      () => props.stage,
+      (newStage) => {
+        updateLoadingState(newStage);
+      }
+    );
 
     return {
       displayedMessage,
@@ -87,20 +76,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.typing-effect {
-  border-right: 2px solid #000;
-  animation: blink-caret 0.75s step-end infinite;
-}
-
-@keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #000;
-  }
-}
-</style>

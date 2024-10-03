@@ -41,7 +41,6 @@ import Button from "primevue/button";
 import Message from "primevue/message";
 import Toast from "primevue/toast";
 import { usePostGeneration } from "../composables/usePostGeneration";
-import { useLoadingState } from "../composables/useLoadingState";
 
 export default defineComponent({
   name: "ResultPage",
@@ -56,9 +55,8 @@ export default defineComponent({
       copyPost,
       generatePost,
       regeneratePost,
+      progressPercentage,
     } = usePostGeneration();
-
-    const { progressPercentage } = useLoadingState();
 
     onMounted(generatePost);
 
