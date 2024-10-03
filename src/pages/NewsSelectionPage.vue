@@ -8,32 +8,37 @@
     <div v-else-if="error" class="text-red-500">
       {{ error }}
     </div>
-    <div v-else>
-      <div class="grid grid-cols-1 gap-6 mb-6">
-        <LinkPreview
-          v-for="item in paginatedNewsItems"
-          :key="item.link"
-          :news-item="item"
-          :selected="selectedItems.includes(item)"
-          @toggle-selection="toggleSelection(item)"
-        />
-      </div>
-      <Paginator
-        v-model:first="first"
-        :rows="5"
-        :total-records="newsItems.length"
-        template="PrevPageLink PageLinks NextPageLink"
-        class="mb-6"
-      />
-      <div class="flex justify-between items-center">
+    <div v-else class="flex flex-col h-[calc(100vh-200px)]">
+      <div class="flex justify-end mb-2">
         <p class="text-sm text-gray-600">
           {{ selectedItems.length }}/{{ MAX_NEWS_ITEMS }} 선택됨
         </p>
+      </div>
+      <div class="flex-grow overflow-y-auto mb-4">
+        <div class="grid grid-cols-1 gap-4">
+          <LinkPreview
+            v-for="item in paginatedNewsItems"
+            :key="item.link"
+            :news-item="item"
+            :selected="selectedItems.includes(item)"
+            @toggle-selection="toggleSelection(item)"
+          />
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-4">
+        <Paginator
+          v-model:first="first"
+          :rows="5"
+          :total-records="newsItems.length"
+          template="PrevPageLink PageLinks NextPageLink"
+          class="flex-grow"
+        />
         <Button
           label="포스트 생성하기"
           icon="pi pi-file-edit"
           @click="generatePost"
           :disabled="selectedItems.length === 0"
+          class="ml-4"
         />
       </div>
     </div>
@@ -110,3 +115,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.container {
+  max-width: 800px;
+}
+</style>
