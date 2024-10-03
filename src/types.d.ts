@@ -21,3 +21,9 @@ export interface NewsItem {
 export interface ParsedContent {
   text: string;
 }
+
+export type LoadingStage =
+  | "initializing"
+  | "references"
+  | "generating"
+  | "finalizing";

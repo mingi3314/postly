@@ -13,6 +13,7 @@ export function usePostGeneration() {
     isLoading,
     loadingStage,
     error,
+    progressPercentage,
     setLoading,
     setLoadingStage,
     setError,
@@ -46,6 +47,7 @@ export function usePostGeneration() {
     try {
       setLoading(true);
       resetError();
+      setLoadingStage("initializing");
 
       if (!useExistingReferences || references.value.length === 0) {
         setLoadingStage("references");
@@ -77,5 +79,6 @@ export function usePostGeneration() {
     copyPost,
     generatePost,
     regeneratePost,
+    progressPercentage,
   };
 }
