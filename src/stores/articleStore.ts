@@ -28,7 +28,10 @@ export const useArticleStore = defineStore("article", {
         throw new Error("Topic is not set");
       }
       const newsService = new NewsService(API_URL);
-      return await newsService.searchNews(this.topic);
+      return await newsService.searchNews({
+        query: this.topic,
+        filterByDomain: true,
+      });
     },
     async getReferences(): Promise<Reference[]> {
       if (this.selectedNewsItems.length > 0) {
