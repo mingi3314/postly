@@ -58,7 +58,9 @@ export default defineComponent({
       progressPercentage,
     } = usePostGeneration();
 
-    onMounted(generatePost);
+    onMounted(async () => {
+      await generatePost();
+    });
 
     return {
       isLoading,

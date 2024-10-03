@@ -14,7 +14,7 @@
     <KeywordInput
       v-if="inputMode.value === 'keyword'"
       v-model="topic"
-      @generate="generatePostFromKeyword"
+      @generate="searchNews"
     />
 
     <DirectTextInput v-else @generate="generatePostFromText" />
@@ -46,10 +46,10 @@ export default defineComponent({
     const articleStore = useArticleStore();
     const { inputModes, inputMode } = useInputMode();
 
-    const generatePostFromKeyword = async () => {
+    const searchNews = async () => {
       if (topic.value.trim()) {
         await articleStore.setTopic(topic.value.trim());
-        router.push("/result");
+        router.push("/news-selection");
       }
     };
 
@@ -68,7 +68,7 @@ export default defineComponent({
 
     return {
       topic,
-      generatePostFromKeyword,
+      searchNews,
       inputModes,
       inputMode,
       generatePostFromText,

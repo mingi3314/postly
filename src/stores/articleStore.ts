@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
-import type { Reference } from "../types";
+import type { NewsItem, Reference } from "../types";
 import { NewsService } from "../services/NewsService";
 import { ContentParserService } from "../services/ContentParserService";
 import { PostGenerationService } from "../services/PostGenerationService";
+import { MAX_NEWS_ITEMS } from "../../backend/config/newsConfig";
 
 const API_URL = process.env.VUE_APP_API_URL;
 
@@ -10,6 +11,7 @@ export const useArticleStore = defineStore("article", {
   state: () => ({
     topic: "",
     directTexts: [] as string[],
+    selectedNewsItems: [] as NewsItem[],
   }),
   actions: {
     setTopic(newTopic: string) {
@@ -18,41 +20,32 @@ export const useArticleStore = defineStore("article", {
     setDirectTexts(texts: string[]) {
       this.directTexts = texts;
     },
-    async getReferences(): Promise<Reference[]> {
-      if (!this.topic && this.directTexts.length === 0) {
-        throw new Error("주제 또는 텍스트가 설정되지 않았습니다.");
+    setSelectedNewsItems(newsItems: NewsItem[]) {
+      this.selectedNewsItems = newsItems.slice(0, MAX_NEWS_ITEMS);
+    },
+    async searchNews(): Promise<NewsItem[]> {
+      if (!this.topic) {
+        throw new Error("Topic is not set");
       }
-
-      if (this.topic) {
-        return await this.getReferencesFromTopic();
-      } else {
+      const newsService = new NewsService(API_URL);
+      return await newsService.searchNews(this.topic);
+    },
+    async getReferences(): Promise<Reference[]> {
+      if (this.selectedNewsItems.length > 0) {
+        return this.getReferencesFromSelectedNews();
+      } else if (this.directTexts.length > 0) {
         return this.getReferencesFromDirectTexts();
       }
+      throw new Error("No source for references");
     },
-    async getReferencesFromTopic(): Promise<Reference[]> {
-      const newsService = new NewsService(API_URL);
+    async getReferencesFromSelectedNews(): Promise<Reference[]> {
       const contentParserService = new ContentParserService(API_URL);
-
-      try {
-        // 1. 뉴스 검색
-        const newsItems = await newsService.searchNews(this.topic);
-
-        // 2. 뉴스 아이템 필터링
-        const filteredNewsItems = newsService.filterNewsItems(newsItems);
-
-        // 3. 뉴스 본문 파싱
-        const parsedContents = await contentParserService.parseNewsContents(
-          filteredNewsItems
-        );
-
-        // 4. 유효한 콘텐츠만 필터링
-        return parsedContents
-          .filter((content) => content && content.length > 0)
-          .map((content) => ({ text: content }));
-      } catch (error) {
-        console.error("Failed to get references from topic:", error);
-        throw new Error("뉴스 참조를 가져오는 데 실패했습니다.");
-      }
+      const parsedContents = await contentParserService.parseNewsContents(
+        this.selectedNewsItems
+      );
+      return parsedContents
+        .filter((content) => content && content.length > 0)
+        .map((content) => ({ text: content }));
     },
     getReferencesFromDirectTexts(): Reference[] {
       return this.directTexts.map((text) => ({ text }));
