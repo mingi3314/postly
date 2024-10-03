@@ -6,19 +6,33 @@ import {
 } from "../config/newsConfig.js";
 
 export class ContentParser {
-  parseNewsContent(url: string, htmlContent: string): string {
-    const $ = cheerio.load(htmlContent);
-    let content = "";
-
+  parseNewsContent(url: string, content: string): string {
     if (url.startsWith(NAVER_NEWS_URL)) {
-      content = $("#dic_area").text();
-    } else if (
-      url.startsWith(NAVER_ENTERTAIN_URL) ||
-      url.startsWith(NAVER_SPORTS_URL)
-    ) {
-      content = $("div._article_content").text();
+      return this.parseGeneralNewsContent(content);
+    } else if (url.startsWith(NAVER_ENTERTAIN_URL)) {
+      return this.parseEntertainmentNewsContent(content);
+    } else if (url.startsWith(NAVER_SPORTS_URL)) {
+      return this.parseSportsNewsContent(content);
+    } else {
+      throw new Error(`Unsupported URL format: ${url}`);
     }
+  }
 
+  private parseGeneralNewsContent(htmlContent: string): string {
+    const $ = cheerio.load(htmlContent);
+    const content = $("#dic_area").text();
+    return content.trim();
+  }
+
+  private parseEntertainmentNewsContent(jsonContent: string): string {
+    const data = JSON.parse(jsonContent);
+    const content = data.result.articleInfo.article.refinedContent;
+    return content.trim();
+  }
+
+  private parseSportsNewsContent(jsonContent: string): string {
+    const data = JSON.parse(jsonContent);
+    const content = data.result.articleInfo.article.refinedContent;
     return content.trim();
   }
 }

@@ -20,8 +20,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const contentParser = new ContentParser();
 
   try {
-    const htmlContent = await webScraper.fetchHtmlContent(url);
-    const parsedContent = contentParser.parseNewsContent(url, htmlContent);
+    const content = await webScraper.fetchContent(url);
+    const parsedContent = contentParser.parseNewsContent(url, content);
     return res.status(200).json({ parsedContent });
   } catch (error) {
     console.error("Error parsing news content:", error);
@@ -29,7 +29,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: error.message });
     }
     return res.status(500).json({ error: "Failed to parse news content" });
-  } finally {
-    await webScraper.close();
   }
 }
