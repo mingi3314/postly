@@ -1,57 +1,88 @@
 import axios from "axios";
-import puppeteer, { Browser } from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
-import { NAVER_ENTERTAIN_URL, NAVER_SPORTS_URL } from "../config/newsConfig.js";
+import {
+  NAVER_NEWS_URL,
+  NAVER_ENTERTAIN_URL,
+  NAVER_SPORTS_URL,
+} from "../config/newsConfig.js";
 import { WebScraperError } from "../errors/WebScraperError.js";
 
 export class WebScraper {
-  private browser: Browser | null = null;
-
-  async fetchHtmlContent(url: string): Promise<string> {
+  async fetchContent(url: string): Promise<string> {
     try {
-      if (this.needsPuppeteer(url)) {
-        return await this.fetchWithPuppeteer(url);
+      if (this.isEntertainmentNews(url)) {
+        return await this.fetchEntertainmentNews(url);
+      } else if (this.isSportsNews(url)) {
+        return await this.fetchSportsNews(url);
+      } else if (this.isGeneralNews(url)) {
+        return await this.fetchGeneralNews(url);
       } else {
-        return await this.fetchWithAxios(url);
+        throw new WebScraperError(`Unsupported URL format: ${url}`);
       }
-    } catch (error) {
-      throw new WebScraperError(`Failed to fetch HTML content from ${url}`);
+    } catch (error: any) {
+      throw new WebScraperError(
+        `Failed to fetch content from ${url}: ${error.message}`
+      );
     }
   }
 
-  private needsPuppeteer(url: string): boolean {
-    return (
-      url.startsWith(NAVER_ENTERTAIN_URL) || url.startsWith(NAVER_SPORTS_URL)
-    );
+  private isEntertainmentNews(url: string): boolean {
+    return url.startsWith(NAVER_ENTERTAIN_URL);
   }
 
-  private async fetchWithPuppeteer(url: string): Promise<string> {
-    if (!this.browser) {
-      this.browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-      });
+  private isSportsNews(url: string): boolean {
+    return url.startsWith(NAVER_SPORTS_URL);
+  }
+
+  private isGeneralNews(url: string): boolean {
+    return url.startsWith(NAVER_NEWS_URL);
+  }
+
+  private async fetchEntertainmentNews(url: string): Promise<string> {
+    // Extract the article ID from the URL
+    const match = url.match(/\/article\/(\d+)\/(\d+)/);
+    if (!match) {
+      throw new WebScraperError(`Invalid entertainment news URL: ${url}`);
     }
-    const page = await this.browser.newPage();
+    const [_, officeId, articleId] = match;
+
+    const apiUrl = `https://api-gw.entertain.naver.com/news/article/${officeId}/${articleId}`;
     try {
-      await page.goto(url, { waitUntil: "networkidle2" });
-      return await page.content();
-    } finally {
-      await page.close();
+      const response = await axios.get(apiUrl, { timeout: 5000 });
+      return JSON.stringify(response.data);
+    } catch (error: any) {
+      throw new WebScraperError(
+        `Failed to fetch entertainment news from API: ${error.message}`
+      );
     }
   }
 
-  private async fetchWithAxios(url: string): Promise<string> {
-    const response = await axios.get(url);
-    return response.data;
+  private async fetchSportsNews(url: string): Promise<string> {
+    // Extract the article ID from the URL
+    const match = url.match(/\/article\/(\d+)\/(\d+)/);
+    if (!match) {
+      throw new WebScraperError(`Invalid sports news URL: ${url}`);
+    }
+    const [_, officeId, articleId] = match;
+
+    const apiUrl = `https://api-gw.sports.naver.com/news/article/${officeId}/${articleId}`;
+    try {
+      const response = await axios.get(apiUrl, { timeout: 5000 });
+      return JSON.stringify(response.data);
+    } catch (error: any) {
+      throw new WebScraperError(
+        `Failed to fetch sports news from API: ${error.message}`
+      );
+    }
   }
 
-  async close(): Promise<void> {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = null;
+  private async fetchGeneralNews(url: string): Promise<string> {
+    try {
+      const response = await axios.get(url, { timeout: 5000 });
+      return response.data;
+    } catch (error: any) {
+      throw new WebScraperError(
+        `Failed to fetch general news from URL: ${error.message}`
+      );
     }
   }
 }
