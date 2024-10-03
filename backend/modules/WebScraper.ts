@@ -36,7 +36,7 @@ export class WebScraper {
     }
     const page = await this.browser.newPage();
     try {
-      await page.goto(url, { waitUntil: "networkidle0" });
+      await page.goto(url, { waitUntil: "networkidle2" });
       return await page.content();
     } finally {
       await page.close();
