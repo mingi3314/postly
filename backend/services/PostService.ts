@@ -17,7 +17,7 @@ async function generatePostContent(
   formattedReferences: string
 ): Promise<string> {
   const systemTemplate = generatePostPrompt;
-  const userTemplate = `{references}`;
+  const userTemplate = `<References>\n{references}\n</References>`;
 
   const prompt = ChatPromptTemplate.fromMessages([
     ["system", systemTemplate],
