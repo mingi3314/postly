@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { PromptTemplate } from "@langchain/core/prompts";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { generatePostPrompt } from "../prompts/generatePostPrompt.js";
 
@@ -16,7 +16,13 @@ export async function generatePost(
 async function generatePostContent(
   formattedReferences: string
 ): Promise<string> {
-  const prompt = PromptTemplate.fromTemplate(generatePostPrompt);
+  const systemTemplate = generatePostPrompt;
+  const userTemplate = `{references}`;
+
+  const prompt = ChatPromptTemplate.fromMessages([
+    ["system", systemTemplate],
+    ["user", userTemplate],
+  ]);
   const model = new ChatOpenAI({
     model: "gpt-4o-mini",
     apiKey: process.env.VUE_APP_OPENAI_API_KEY,
