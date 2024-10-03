@@ -2,6 +2,7 @@
   "name": "postly",
   "version": "0.1.0",
   "private": true,
+  "license": "All rights reserved",
   "type": "module",
   "scripts": {
     "serve": "vue-cli-service serve",
