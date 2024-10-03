@@ -9,10 +9,16 @@
       {{ error }}
     </div>
     <div v-else class="flex flex-col h-[calc(100vh-200px)]">
-      <div class="flex justify-end mb-2">
+      <div class="flex justify-between items-center mb-5">
         <p class="text-sm text-gray-600">
           {{ selectedItems.length }}/{{ MAX_NEWS_ITEMS }} 선택됨
         </p>
+        <Button
+          label="포스트 생성하기"
+          icon="pi pi-file-edit"
+          @click="generatePost"
+          :disabled="selectedItems.length === 0"
+        />
       </div>
       <div class="flex-grow overflow-y-auto mb-4">
         <div class="grid grid-cols-1 gap-4">
@@ -20,27 +26,17 @@
             v-for="item in paginatedNewsItems"
             :key="item.link"
             :news-item="item"
-            :selected="selectedItems.includes(item)"
+            :selected="isSelected(item)"
             @toggle-selection="toggleSelection(item)"
           />
         </div>
       </div>
-      <div class="flex justify-between items-center mt-4">
-        <Paginator
-          v-model:first="first"
-          :rows="5"
-          :total-records="newsItems.length"
-          template="PrevPageLink PageLinks NextPageLink"
-          class="flex-grow"
-        />
-        <Button
-          label="포스트 생성하기"
-          icon="pi pi-file-edit"
-          @click="generatePost"
-          :disabled="selectedItems.length === 0"
-          class="ml-4"
-        />
-      </div>
+      <Paginator
+        v-model:first="first"
+        :rows="5"
+        :total-records="newsItems.length"
+        template="PrevPageLink PageLinks NextPageLink"
+      />
     </div>
   </div>
 </template>
@@ -74,6 +70,9 @@ export default defineComponent({
       return newsItems.value.slice(start, end);
     });
 
+    const isSelected = (item: NewsItem) =>
+      selectedItems.value.some((i) => i.link === item.link);
+
     const toggleSelection = (item: NewsItem) => {
       const index = selectedItems.value.findIndex((i) => i.link === item.link);
       if (index === -1) {
@@ -90,16 +89,18 @@ export default defineComponent({
       router.push("/result");
     };
 
-    onMounted(async () => {
+    const fetchNewsItems = async () => {
       try {
         newsItems.value = await articleStore.searchNews();
-        isLoading.value = false;
       } catch (e) {
         error.value =
           "뉴스 기사를 불러오는데 실패했습니다. 다시 시도해 주세요.";
+      } finally {
         isLoading.value = false;
       }
-    });
+    };
+
+    onMounted(fetchNewsItems);
 
     return {
       newsItems,
@@ -111,6 +112,7 @@ export default defineComponent({
       paginatedNewsItems,
       first,
       MAX_NEWS_ITEMS,
+      isSelected,
     };
   },
 });

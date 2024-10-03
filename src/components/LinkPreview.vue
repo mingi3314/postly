@@ -43,27 +43,20 @@ export default defineComponent({
   },
   emits: ["toggle-selection"],
   setup(props) {
-    const cleanTitle = computed(() => {
-      return props.newsItem.title
-        .replace(/<b>/g, "")
-        .replace(/<\/b>/g, "")
+    const cleanText = (text: string) => {
+      return text
+        .replace(/<\/?b>/g, "")
         .replace(/&quot;/g, '"')
         .replace(/&amp;/g, "&")
         .replace(/&lt;/g, "<")
         .replace(/&gt;/g, ">")
         .trim();
-    });
+    };
 
-    const cleanDescription = computed(() => {
-      return props.newsItem.description
-        .replace(/<b>/g, "")
-        .replace(/<\/b>/g, "")
-        .replace(/&quot;/g, '"')
-        .replace(/&amp;/g, "&")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
-        .trim();
-    });
+    const cleanTitle = computed(() => cleanText(props.newsItem.title));
+    const cleanDescription = computed(() =>
+      cleanText(props.newsItem.description)
+    );
 
     return {
       cleanTitle,
