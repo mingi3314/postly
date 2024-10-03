@@ -16,6 +16,7 @@ export interface NewsItem {
   link: string;
   description: string;
   pubDate: string;
+  thumbnail?: string;
 }
 
 export interface ParsedContent {

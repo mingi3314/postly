@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../pages/HomePage.vue";
 import ResultPage from "../pages/ResultPage.vue";
+import NewsSelectionPage from "../pages/NewsSelectionPage.vue";
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     name: "Result",
     component: ResultPage,
   },
+  {
+    path: "/news-selection",
+    name: "NewsSelection",
+    component: NewsSelectionPage,
+  },
 ];
 
 const router = createRouter({
@@ -21,8 +27,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === "Result" && !from.name) {
-    // Prevent direct navigation to the result page
+  if ((to.name === "Result" || to.name === "NewsSelection") && !from.name) {
+    // Prevent direct navigation to the result or news selection page
     next("/");
   } else {
     next();
