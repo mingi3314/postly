@@ -8,11 +8,13 @@
       v-model="inputMode"
       :options="inputModes"
       optionLabel="name"
+      optionValue="value"
       class="mb-4"
+      :allowEmpty="false"
     />
 
     <KeywordInput
-      v-if="inputMode.value === 'keyword'"
+      v-if="inputMode === 'keyword'"
       v-model="topic"
       @generate="searchNews"
     />
@@ -58,12 +60,10 @@ export default defineComponent({
       router.push("/result");
     };
 
-    const inputModeDescription = computed(
-      () =>
-        ({
-          keyword: "관련 뉴스를 찾아 포스트를 생성해드려요 ☺️",
-          text: "입력한 텍스트를 기반으로 포스트를 생성해드려요 ☺️",
-        }[inputMode.value.value])
+    const inputModeDescription = computed(() =>
+      inputMode.value === "keyword"
+        ? "관련 뉴스를 찾아 포스트를 생성해드려요 ☺️"
+        : "입력한 텍스트를 기반으로 포스트를 생성해드려요 ☺️"
     );
 
     return {

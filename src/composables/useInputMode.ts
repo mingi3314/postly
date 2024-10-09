@@ -1,16 +1,18 @@
 import { ref } from "vue";
 
-interface InputMode {
+type InputModeValue = "keyword" | "text";
+
+interface InputModeOption {
   name: string;
-  value: "keyword" | "text";
+  value: InputModeValue;
 }
 
 export function useInputMode() {
-  const inputModes = ref<InputMode[]>([
+  const inputModes = ref<InputModeOption[]>([
     { name: "키워드로 생성하기", value: "keyword" },
     { name: "직접 텍스트 입력하기", value: "text" },
   ]);
-  const inputMode = ref<InputMode>(inputModes.value[0]);
+  const inputMode = ref<InputModeValue>("keyword");
 
   return {
     inputModes,
