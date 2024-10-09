@@ -5,7 +5,7 @@ import { ContentParserService } from "../services/ContentParserService";
 import { PostGenerationService } from "../services/PostGenerationService";
 import { MAX_NEWS_ITEMS } from "../../backend/config/newsConfig";
 
-const API_URL = process.env.VUE_APP_API_URL;
+const API_URL = process.env.VUE_APP_API_URL as string;
 
 export const useArticleStore = defineStore("article", {
   state: () => ({

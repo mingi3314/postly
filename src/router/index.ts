@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../pages/HomePage.vue";
-import ResultPage from "../pages/ResultPage.vue";
-import NewsSelectionPage from "../pages/NewsSelectionPage.vue";
+import HomePage from "@/pages/HomePage.vue";
+import ResultPage from "@/pages/ResultPage.vue";
+import NewsSelectionPage from "@/pages/NewsSelectionPage.vue";
+import LoginPage from "@/pages/LoginPage.vue";
+import RegisterPage from "@/pages/RegisterPage.vue";
+import { useUserStore } from "@/stores/userStore";
 
 const routes = [
   {
@@ -13,11 +16,23 @@ const routes = [
     path: "/result",
     name: "Result",
     component: ResultPage,
+    meta: { requiresAuth: true },
   },
   {
     path: "/news-selection",
     name: "NewsSelection",
     component: NewsSelectionPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: LoginPage,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: RegisterPage,
   },
 ];
 
@@ -26,9 +41,16 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  if ((to.name === "Result" || to.name === "NewsSelection") && !from.name) {
-    // Prevent direct navigation to the result or news selection page
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+  await userStore.fetchUser();
+
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const isLoggedIn = userStore.isLoggedIn;
+
+  if (requiresAuth && !isLoggedIn) {
+    next("/login");
+  } else if (isLoggedIn && (to.name === "Login" || to.name === "Register")) {
     next("/");
   } else {
     next();
