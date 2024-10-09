@@ -1,9 +1,9 @@
 <template>
   <div class="flex justify-center items-center h-screen bg-surface-100">
     <Card class="w-full max-w-md">
-      <template #title>회원가입</template>
+      <template #title>{{ title }}</template>
       <template #content>
-        <form @submit.prevent="handleRegister" class="space-y-4">
+        <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
             <label
               for="email"
@@ -27,13 +27,13 @@
               inputClass="w-full"
             />
           </div>
-          <Button type="submit" label="회원가입" class="w-full" />
+          <Button type="submit" :label="submitLabel" class="w-full" />
         </form>
       </template>
       <template #footer>
-        <router-link to="/login" class="text-primary-600 hover:underline"
-          >이미 계정이 있으신가요? 로그인</router-link
-        >
+        <router-link :to="footerLink" class="text-primary-600 hover:underline">
+          {{ footerText }}
+        </router-link>
       </template>
     </Card>
   </div>
@@ -41,8 +41,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "../stores/userStore";
 import Card from "primevue/card";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
@@ -50,23 +48,34 @@ import Button from "primevue/button";
 
 export default defineComponent({
   components: { Card, InputText, Password, Button },
-  setup() {
-    const router = useRouter();
-    const userStore = useUserStore();
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    submitLabel: {
+      type: String,
+      required: true,
+    },
+    footerLink: {
+      type: String,
+      required: true,
+    },
+    footerText: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ["submit"],
+  setup(props, { emit }) {
     const email = ref("");
     const password = ref("");
 
-    const handleRegister = async () => {
-      try {
-        await userStore.register(email.value, password.value);
-        router.push("/");
-      } catch (error) {
-        console.error("Registration failed:", error);
-        // TODO: Show error message to user
-      }
+    const handleSubmit = () => {
+      emit("submit", { email: email.value, password: password.value });
     };
 
-    return { email, password, handleRegister };
+    return { email, password, handleSubmit };
   },
 });
 </script>

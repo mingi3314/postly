@@ -7,7 +7,7 @@
     </Menu>
   </div>
   <div v-else>
-    <Button label="로그인" icon="pi pi-sign-in" @click="navigateToLogin" />
+    <Button label="로그인" icon="pi pi-sign-in" @click="navigateToSignIn" />
   </div>
 </template>
 
@@ -32,16 +32,16 @@ export default defineComponent({
         icon: "pi pi-sign-out",
         command: async () => {
           await userStore.logout();
-          router.push("/login");
+          router.push("/signin");
         },
       },
     ];
 
-    const navigateToLogin = () => {
-      router.push("/login");
+    const navigateToSignIn = () => {
+      router.push("/signin");
     };
 
-    return { isLoggedIn, items, navigateToLogin };
+    return { isLoggedIn, items, navigateToSignIn };
   },
 });
 </script>

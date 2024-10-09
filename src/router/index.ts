@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "@/pages/HomePage.vue";
 import ResultPage from "@/pages/ResultPage.vue";
 import NewsSelectionPage from "@/pages/NewsSelectionPage.vue";
-import LoginPage from "@/pages/LoginPage.vue";
-import RegisterPage from "@/pages/RegisterPage.vue";
+import SignInPage from "@/pages/SignInPage.vue";
+import SignUpPage from "@/pages/SignUpPage.vue";
 import { useUserStore } from "@/stores/userStore";
 
 const routes = [
@@ -25,14 +25,14 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/login",
-    name: "Login",
-    component: LoginPage,
+    path: "/signin",
+    name: "SignIn",
+    component: SignInPage,
   },
   {
-    path: "/register",
-    name: "Register",
-    component: RegisterPage,
+    path: "/signup",
+    name: "SignUp",
+    component: SignUpPage,
   },
 ];
 
@@ -49,8 +49,8 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = userStore.isLoggedIn;
 
   if (requiresAuth && !isLoggedIn) {
-    next("/login");
-  } else if (isLoggedIn && (to.name === "Login" || to.name === "Register")) {
+    next("/signin");
+  } else if (isLoggedIn && (to.name === "SignIn" || to.name === "SignUp")) {
     next("/");
   } else {
     next();
