@@ -7,8 +7,7 @@ export const useUserStore = defineStore("user", {
     user: null as User | null,
   }),
   getters: {
-    // isLoggedIn: (state) => !!state.user,
-    isLoggedIn: (state) => false, // TODO: supabase 연동 후 수정
+    isLoggedIn: (state) => !!state.user,
   },
   actions: {
     async login(email: string, password: string) {
