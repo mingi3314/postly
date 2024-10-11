@@ -3,7 +3,8 @@
     class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 bg-surface-50"
   >
     <h2 class="text-3xl font-bold mb-8 text-primary-800 text-center">
-      인스타그램 포스트 생성기
+      어떤 주제로<br class="md:hidden" />
+      포스트를 작성할까요?
     </h2>
 
     <div class="w-full max-w-md">
