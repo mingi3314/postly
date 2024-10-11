@@ -1,29 +1,37 @@
 <template>
   <div
-    class="flex flex-col justify-center items-center min-h-screen px-4 bg-surface-50"
+    class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 bg-surface-50"
   >
-    <h1 class="text-5xl font-bold mb-12 text-primary-800">Post.ly</h1>
+    <h2 class="text-3xl font-bold mb-8 text-primary-800 text-center">
+      인스타그램 포스트 생성기
+    </h2>
 
-    <SelectButton
-      v-model="inputMode"
-      :options="inputModes"
-      optionLabel="name"
-      optionValue="value"
-      class="mb-4"
-      :allowEmpty="false"
-    />
+    <div class="w-full max-w-md">
+      <div class="flex justify-center mb-6">
+        <SelectButton
+          v-model="inputMode"
+          :options="inputModes"
+          optionLabel="name"
+          optionValue="value"
+          :allowEmpty="false"
+          :pt="{
+            root: { class: 'flex rounded-md overflow-hidden shadow-sm' },
+          }"
+        />
+      </div>
 
-    <KeywordInput
-      v-if="inputMode === 'keyword'"
-      v-model="topic"
-      @generate="searchNews"
-    />
+      <KeywordInput
+        v-if="inputMode === 'keyword'"
+        v-model="topic"
+        @generate="searchNews"
+      />
 
-    <DirectTextInput v-else @generate="generatePostFromText" />
+      <DirectTextInput v-else @generate="generatePostFromText" />
 
-    <p class="text-surface-600 text-lg max-w-md text-center mt-4">
-      {{ inputModeDescription }}
-    </p>
+      <p class="text-surface-600 text-lg text-center mt-6">
+        {{ inputModeDescription }}
+      </p>
+    </div>
   </div>
 </template>
 

@@ -5,7 +5,10 @@ import { ContentParserService } from "../services/ContentParserService";
 import { PostGenerationService } from "../services/PostGenerationService";
 import { MAX_NEWS_ITEMS } from "../../backend/config/newsConfig";
 
-const API_URL = process.env.VUE_APP_API_URL;
+const API_URL =
+  process.env.VERCEL_ENV === "production"
+    ? "https://postly-six.vercel.app/api"
+    : "http://localhost:3000/api";
 
 export const useArticleStore = defineStore("article", {
   state: () => ({
