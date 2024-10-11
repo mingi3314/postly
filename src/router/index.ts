@@ -16,13 +16,13 @@ const routes = [
     path: "/result",
     name: "Result",
     component: ResultPage,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: false },
   },
   {
     path: "/news-selection",
     name: "NewsSelection",
     component: NewsSelectionPage,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: false },
   },
   {
     path: "/signin",
