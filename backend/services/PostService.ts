@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { createComposedPrompt } from "../Prompts.js";
+import { createComposedPrompt } from "../prompts/CreateComposedPrompt.js";
 
 export async function generatePost(
   references: { text: string }[]
