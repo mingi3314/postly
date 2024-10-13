@@ -4,6 +4,7 @@ import ResultPage from "@/pages/ResultPage.vue";
 import NewsSelectionPage from "@/pages/NewsSelectionPage.vue";
 import SignInPage from "@/pages/SignInPage.vue";
 import SignUpPage from "@/pages/SignUpPage.vue";
+import ExamplesDashboard from "@/pages/ExamplesDashboardPage.vue";
 import { useUserStore } from "@/stores/userStore";
 
 const routes = [
@@ -34,6 +35,12 @@ const routes = [
     name: "SignUp",
     component: SignUpPage,
   },
+  {
+    path: "/examples",
+    name: "Examples",
+    component: ExamplesDashboard,
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = createRouter({
@@ -41,9 +48,15 @@ const router = createRouter({
   routes,
 });
 
+let isInitialLoad = true;
+
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  await userStore.fetchUser();
+
+  if (isInitialLoad) {
+    await userStore.fetchUser();
+    isInitialLoad = false;
+  }
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isLoggedIn = userStore.isLoggedIn;

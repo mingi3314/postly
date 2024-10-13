@@ -2,6 +2,10 @@ export interface Reference {
   text: string;
 }
 
+export interface Example {
+  text: string;
+}
+
 export interface NewsResponse {
   lastBuildDate: string;
   total: number;
@@ -28,3 +32,11 @@ export type LoadingStage =
   | "references"
   | "generating"
   | "finalizing";
+
+export interface PostExample {
+  id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
