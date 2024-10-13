@@ -1,25 +1,33 @@
 <template>
   <Dialog
     :visible="visible"
-    :style="{ width: '50vw' }"
+    :style="{ width: '90%', maxWidth: '600px' }"
     :modal="true"
     :closable="false"
     :header="isEditing ? '게시글 예시 수정' : '게시글 예시 등록'"
   >
-    <div class="p-fluid">
+    <div class="p-fluid p-4">
       <div class="field">
-        <label for="content">내용</label>
-        <Textarea id="content" v-model="content" rows="5" autoResize />
+        <label for="content" class="font-bold mb-2 block">내용</label>
+        <Textarea
+          id="content"
+          v-model="content"
+          rows="8"
+          autoResize
+          class="w-full"
+        />
       </div>
     </div>
     <template #footer>
-      <Button
-        label="취소"
-        icon="pi pi-times"
-        @click="close"
-        class="p-button-text"
-      />
-      <Button label="저장" icon="pi pi-check" @click="save" autofocus />
+      <div class="flex justify-between w-full px-4 pb-4">
+        <Button
+          label="취소"
+          icon="pi pi-times"
+          @click="close"
+          class="p-button-text"
+        />
+        <Button label="저장" icon="pi pi-check" @click="save" autofocus />
+      </div>
     </template>
   </Dialog>
 </template>
