@@ -16,7 +16,7 @@ export function createComposedPrompt({
 } = {}) {
   const finalIntroduction = introduction || defaultContent.introduction;
   const finalGuideline = guideline || defaultContent.guideline;
-  const finalExamples = examples || defaultContent.examples;
+  const finalExamples = examples?.length ? examples : defaultContent.examples;
 
   const introductionPrompt = formatIntroduction(finalIntroduction);
   const guidelinesPrompt = formatGuideline(finalGuideline);

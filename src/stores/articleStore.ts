@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { NewsItem, Reference } from "../types";
+import type { NewsItem, Reference, Example, PostExample } from "../types";
 import { NewsService } from "../services/NewsService";
 import { ContentParserService } from "../services/ContentParserService";
 import { PostGenerationService } from "../services/PostGenerationService";
@@ -56,10 +56,20 @@ export const useArticleStore = defineStore("article", {
     getReferencesFromDirectTexts(): Reference[] {
       return this.directTexts.map((text) => ({ text }));
     },
-    async createPost(references: Reference[]): Promise<string> {
+    async createPost(
+      references: Reference[],
+      examples: PostExample[]
+    ): Promise<string> {
       const postGenerationService = new PostGenerationService(API_URL);
+      const formattedExamples: Example[] = examples.map((example) => ({
+        text: example.content,
+      }));
+
       try {
-        return await postGenerationService.generatePost(references);
+        return await postGenerationService.generatePost({
+          references,
+          examples: formattedExamples,
+        });
       } catch (error) {
         console.error("Failed to create post:", error);
         throw new Error("포스트 생성에 실패했습니다.");

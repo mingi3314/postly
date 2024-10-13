@@ -28,6 +28,13 @@ export default defineComponent({
 
     const items = [
       {
+        label: "예시 관리",
+        icon: "pi pi-list",
+        command: () => {
+          router.push("/examples");
+        },
+      },
+      {
         label: "로그아웃",
         icon: "pi pi-sign-out",
         command: async () => {
