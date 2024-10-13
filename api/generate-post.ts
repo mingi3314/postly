@@ -6,14 +6,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { references } = req.body;
+  const { references, examples = [] } = req.body;
 
   if (!references) {
     return res.status(400).json({ error: "News contents are required" });
   }
 
   try {
-    const generatedPost = await generatePost(references);
+    const generatedPost = await generatePost(references, examples);
     return res.status(200).json({ result: generatedPost });
   } catch (error) {
     console.error("Error generating post:", error);

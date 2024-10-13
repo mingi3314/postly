@@ -1,18 +1,26 @@
 import { defaultContent } from "./DefaultPromptContents.js";
 import {
   formatIntroduction,
-  formatGuidelines,
+  formatGuideline,
   formatExamples,
 } from "./Utils.js";
 
 export function createComposedPrompt({
-  introduction = defaultContent.introduction,
-  guidelines = defaultContent.guidelines,
-  examples = defaultContent.examples,
+  introduction,
+  guideline,
+  examples,
+}: {
+  introduction?: string;
+  guideline?: string;
+  examples?: { text: string }[];
 } = {}) {
-  const introductionPrompt = formatIntroduction(introduction);
-  const guidelinesPrompt = formatGuidelines(guidelines);
-  const examplesPrompt = formatExamples(examples);
+  const finalIntroduction = introduction || defaultContent.introduction;
+  const finalGuideline = guideline || defaultContent.guideline;
+  const finalExamples = examples || defaultContent.examples;
+
+  const introductionPrompt = formatIntroduction(finalIntroduction);
+  const guidelinesPrompt = formatGuideline(finalGuideline);
+  const examplesPrompt = formatExamples(finalExamples);
 
   const composedPrompt = [introductionPrompt, guidelinesPrompt, examplesPrompt]
     .filter(Boolean) // Removes any empty strings
