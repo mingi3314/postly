@@ -4,19 +4,21 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { createComposedPrompt } from "../prompts/CreateComposedPrompt.js";
 
 export async function generatePost(
-  references: { text: string }[]
+  references: { text: string }[],
+  examples: { text: string }[]
 ): Promise<string> {
   const formattedReferences = references
     .map((ref) => formatReference(ref))
     .join("\n\n");
 
-  return await generatePostContent(formattedReferences);
+  return await generatePostContent(formattedReferences, examples);
 }
 
 async function generatePostContent(
-  formattedReferences: string
+  formattedReferences: string,
+  examples: { text: string }[]
 ): Promise<string> {
-  const systemTemplate = createComposedPrompt();
+  const systemTemplate = createComposedPrompt({ examples });
   const userTemplate = `<References>\n{references}\n</References>`;
 
   const prompt = ChatPromptTemplate.fromMessages([
