@@ -1,5 +1,4 @@
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useArticleStore } from "../stores/articleStore";
 import { useExampleStore } from "../stores/exampleStore";
 import { useUserStore } from "../stores/userStore";
@@ -8,7 +7,6 @@ import { useLoadingState } from "./useLoadingState";
 import type { Reference, PostExample } from "../types";
 
 export function usePostGeneration() {
-  const router = useRouter();
   const articleStore = useArticleStore();
   const exampleStore = useExampleStore();
   const userStore = useUserStore();
@@ -27,15 +25,6 @@ export function usePostGeneration() {
   const generatedPost = ref("");
   const references = ref<Reference[]>([]);
   const examples = ref<PostExample[]>([]);
-
-  const reset = () => {
-    articleStore.setTopic("");
-    articleStore.setDirectTexts([]);
-    generatedPost.value = "";
-    references.value = [];
-    resetError();
-    router.push("/");
-  };
 
   const copyPost = () => {
     navigator.clipboard.writeText(generatedPost.value);
@@ -87,7 +76,6 @@ export function usePostGeneration() {
     loadingStage,
     error,
     generatedPost,
-    reset,
     copyPost,
     generatePost,
     regeneratePost,
