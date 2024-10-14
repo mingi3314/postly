@@ -1,18 +1,29 @@
 <template>
-  <div v-if="isLoggedIn">
-    <Menu :model="items">
-      <template #button>
-        <Button type="button" label="사용자 메뉴" icon="pi pi-user" />
-      </template>
-    </Menu>
-  </div>
-  <div v-else>
-    <Button label="로그인" icon="pi pi-sign-in" @click="navigateToSignIn" />
+  <div>
+    <template v-if="isLoggedIn">
+      <Button
+        type="button"
+        icon="pi pi-user"
+        class="p-button-text p-button-rounded"
+        @click="toggle"
+        aria-haspopup="true"
+        aria-controls="overlay_menu"
+        aria-label="사용자 메뉴"
+      />
+      <Menu ref="menu" :model="items" :popup="true" id="overlay_menu" />
+    </template>
+    <Button
+      v-else
+      label="로그인"
+      icon="pi pi-sign-in"
+      @click="navigateToSignIn"
+      class="p-button-text"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/userStore";
 import Menu from "primevue/menu";
@@ -23,6 +34,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const userStore = useUserStore();
+    const menu = ref();
 
     const isLoggedIn = computed(() => userStore.isLoggedIn);
 
@@ -48,7 +60,11 @@ export default defineComponent({
       router.push("/signin");
     };
 
-    return { isLoggedIn, items, navigateToSignIn };
+    const toggle = (event: Event) => {
+      menu.value.toggle(event);
+    };
+
+    return { isLoggedIn, items, navigateToSignIn, menu, toggle };
   },
 });
 </script>
