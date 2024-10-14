@@ -13,7 +13,9 @@ If you need additional contexts, feel free to refer to @Codebase.
 ```
 Act as a programming guru, familiar with Vue3, PrimeVue, and TailwindCSS.
 
+<요구사항>
 {요구사항}
+</요구사항>
 
 1. 우선 요구사항에 따른 기획안을 작성해줘.
 2. 작성된 기획을 바탕으로, 코드 구현을 위한 계획을 수립해줘.
