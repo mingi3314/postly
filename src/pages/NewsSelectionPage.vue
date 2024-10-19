@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col max-w-3xl">
     <h1 class="text-3xl font-bold mb-6">뉴스 선택하기</h1>
     <div v-if="isLoading" class="flex-grow flex items-center justify-center">
-      <div class="text-center">
+      <div class="text-center -mt-16 md:-mt-24">
         <ProgressSpinner />
         <p class="mt-4">뉴스 기사를 불러오는 중...</p>
       </div>
