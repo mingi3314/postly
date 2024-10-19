@@ -1,8 +1,7 @@
 <template>
   <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col max-w-3xl">
-    <h1 class="text-3xl font-bold mb-6">게시글 예시 관리</h1>
-
-    <div class="mb-8 flex justify-end">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">게시글 예시 관리</h1>
       <Button
         label="새 예시 추가"
         icon="pi pi-plus"
