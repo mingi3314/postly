@@ -25,24 +25,18 @@
       >
         <template #icons>
           <Button
-            icon="pi pi-pencil"
+            icon="pi pi-cog"
             text
             rounded
-            aria-label="Edit"
-            @click.stop="editExample(example)"
-          />
-          <Button
-            icon="pi pi-trash"
-            severity="danger"
-            text
-            rounded
-            aria-label="Delete"
-            @click.stop="deleteExample(example.id)"
+            aria-label="Settings"
+            @click.stop="toggleMenu($event, example.id)"
           />
         </template>
         <p class="whitespace-pre-wrap text-sm">{{ example.content }}</p>
       </Panel>
     </div>
+
+    <Menu ref="menu" :model="menuItems" :popup="true" />
 
     <ExampleModal
       v-model:visible="modalVisible"
@@ -60,6 +54,7 @@ import { useUserStore } from "@/stores/userStore";
 import Button from "primevue/button";
 import Panel from "primevue/panel";
 import ExampleModal from "@/components/ExampleModal.vue";
+import Menu from "primevue/menu";
 import type { PostExample } from "@/types";
 
 export default defineComponent({
@@ -68,6 +63,7 @@ export default defineComponent({
     Button,
     Panel,
     ExampleModal,
+    Menu,
   },
   setup() {
     const exampleStore = useExampleStore();
@@ -123,6 +119,26 @@ export default defineComponent({
       await exampleStore.deleteExample(id);
     };
 
+    const menu = ref();
+    const menuItems = ref([
+      {
+        label: "수정",
+        icon: "pi pi-pencil",
+        command: () => editExample(selectedExample.value),
+      },
+      {
+        label: "삭제",
+        icon: "pi pi-trash",
+        command: () => deleteExample(selectedExample.value.id),
+      },
+    ]);
+
+    const toggleMenu = (event: Event, exampleId: string) => {
+      selectedExample.value =
+        examples.value.find((e) => e.id === exampleId) || selectedExample.value;
+      menu.value.toggle(event);
+    };
+
     return {
       examples,
       modalVisible,
@@ -132,6 +148,9 @@ export default defineComponent({
       editExample,
       saveExample,
       deleteExample,
+      menu,
+      menuItems,
+      toggleMenu,
     };
   },
 });
