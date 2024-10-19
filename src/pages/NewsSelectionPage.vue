@@ -1,9 +1,11 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col">
     <h1 class="text-3xl font-bold mb-6">뉴스 선택하기</h1>
-    <div v-if="isLoading" class="text-center">
-      <ProgressSpinner />
-      <p class="mt-4">뉴스 기사를 불러오는 중...</p>
+    <div v-if="isLoading" class="flex-grow flex items-center justify-center">
+      <div class="text-center">
+        <ProgressSpinner />
+        <p class="mt-4">뉴스 기사를 불러오는 중...</p>
+      </div>
     </div>
     <div v-else-if="error" class="text-red-500">
       {{ error }}
