@@ -1,32 +1,49 @@
 <template>
-  <div class="card">
-    <DataTable :value="examples" responsiveLayout="scroll">
-      <Column field="content" header="내용">
-        <template #body="slotProps">
-          <div class="truncate max-w-md">{{ slotProps.data.content }}</div>
-        </template>
-      </Column>
-      <Column :exportable="false" style="min-width: 8rem">
-        <template #body="slotProps">
+  <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col max-w-3xl">
+    <h1 class="text-3xl font-bold mb-6">게시글 예시 관리</h1>
+
+    <div class="mb-8 flex justify-end">
+      <Button
+        label="새 예시 추가"
+        icon="pi pi-plus"
+        @click="openAddModal"
+        class="p-button-primary"
+      />
+    </div>
+
+    <div v-if="examples.length === 0" class="text-center text-gray-500 my-8">
+      예시가 없습니다. 새로운 예시를 추가해보세요!
+    </div>
+
+    <div v-else class="space-y-4">
+      <Panel
+        v-for="(example, index) in examples"
+        :key="example.id"
+        :header="`예시 #${index + 1}`"
+        :toggleable="true"
+        class="mb-2"
+      >
+        <template #icons>
           <Button
             icon="pi pi-pencil"
-            class="p-button-rounded p-button-success mr-2"
-            @click="editExample(slotProps.data)"
+            text
+            rounded
+            aria-label="Edit"
+            @click.stop="editExample(example)"
           />
           <Button
             icon="pi pi-trash"
-            class="p-button-rounded p-button-warning"
-            @click="deleteExample(slotProps.data.id)"
+            severity="danger"
+            text
+            rounded
+            aria-label="Delete"
+            @click.stop="deleteExample(example.id)"
           />
         </template>
-      </Column>
-    </DataTable>
-    <Button
-      label="새 예시 추가"
-      icon="pi pi-plus"
-      class="mt-4"
-      @click="openAddModal"
-    />
+        <p class="whitespace-pre-wrap text-sm">{{ example.content }}</p>
+      </Panel>
+    </div>
+
     <ExampleModal
       v-model:visible="modalVisible"
       :initial-content="selectedExample.content"
@@ -40,18 +57,16 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { useExampleStore } from "@/stores/exampleStore";
 import { useUserStore } from "@/stores/userStore";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
 import Button from "primevue/button";
+import Panel from "primevue/panel";
 import ExampleModal from "@/components/ExampleModal.vue";
 import type { PostExample } from "@/types";
 
 export default defineComponent({
   name: "ExamplesDashboard",
   components: {
-    DataTable,
-    Column,
     Button,
+    Panel,
     ExampleModal,
   },
   setup() {
