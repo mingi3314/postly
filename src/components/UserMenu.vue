@@ -1,3 +1,43 @@
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/userStore";
+import Menu from "primevue/menu";
+import Button from "primevue/button";
+
+const router = useRouter();
+const userStore = useUserStore();
+const menu = ref();
+
+const isLoggedIn = computed(() => userStore.isLoggedIn);
+
+const items = [
+  {
+    label: "예시 관리",
+    icon: "pi pi-list",
+    command: () => {
+      router.push("/examples");
+    },
+  },
+  {
+    label: "로그아웃",
+    icon: "pi pi-sign-out",
+    command: async () => {
+      await userStore.logout();
+      router.push("/signin");
+    },
+  },
+];
+
+const navigateToSignIn = () => {
+  router.push("/signin");
+};
+
+const toggle = (event: Event) => {
+  menu.value.toggle(event);
+};
+</script>
+
 <template>
   <div>
     <template v-if="isLoggedIn">
@@ -21,50 +61,3 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/userStore";
-import Menu from "primevue/menu";
-import Button from "primevue/button";
-
-export default defineComponent({
-  components: { Menu, Button },
-  setup() {
-    const router = useRouter();
-    const userStore = useUserStore();
-    const menu = ref();
-
-    const isLoggedIn = computed(() => userStore.isLoggedIn);
-
-    const items = [
-      {
-        label: "예시 관리",
-        icon: "pi pi-list",
-        command: () => {
-          router.push("/examples");
-        },
-      },
-      {
-        label: "로그아웃",
-        icon: "pi pi-sign-out",
-        command: async () => {
-          await userStore.logout();
-          router.push("/signin");
-        },
-      },
-    ];
-
-    const navigateToSignIn = () => {
-      router.push("/signin");
-    };
-
-    const toggle = (event: Event) => {
-      menu.value.toggle(event);
-    };
-
-    return { isLoggedIn, items, navigateToSignIn, menu, toggle };
-  },
-});
-</script>

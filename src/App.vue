@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import UserMenu from "@/components/UserMenu.vue";
+import "./assets/global.css";
+</script>
+
 <template>
   <div id="app" class="flex flex-col min-h-screen">
     <header class="bg-surface-0 shadow-md py-2 px-4">
@@ -16,16 +21,5 @@
     </main>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import UserMenu from "@/components/UserMenu.vue";
-import "./assets/global.css";
-
-export default defineComponent({
-  name: "App",
-  components: { UserMenu },
-});
-</script>
 
 <style></style>

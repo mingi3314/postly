@@ -1,3 +1,34 @@
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useRouter } from "vue-router";
+import GeneratedPost from "../components/GeneratedPost.vue";
+import LoadingComponent from "../components/LoadingComponent.vue";
+import Button from "primevue/button";
+import Message from "primevue/message";
+import Toast from "primevue/toast";
+import { usePostGeneration } from "../composables/usePostGeneration";
+
+const router = useRouter();
+const {
+  isLoading,
+  loadingStage,
+  error,
+  generatedPost,
+  copyPost,
+  generatePost,
+  regeneratePost,
+  progressPercentage,
+} = usePostGeneration();
+
+onMounted(async () => {
+  await generatePost();
+});
+
+const goToHome = () => {
+  router.push("/");
+};
+</script>
+
 <template>
   <div class="result-page">
     <Toast />
@@ -30,57 +61,3 @@
     <Toast position="bottom-center" group="bc" />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import GeneratedPost from "../components/GeneratedPost.vue";
-import LoadingComponent from "../components/LoadingComponent.vue";
-import Button from "primevue/button";
-import Message from "primevue/message";
-import Toast from "primevue/toast";
-import { usePostGeneration } from "../composables/usePostGeneration";
-
-export default defineComponent({
-  name: "ResultPage",
-  components: {
-    GeneratedPost,
-    LoadingComponent,
-    Button,
-    Message,
-    Toast,
-  },
-  setup() {
-    const router = useRouter();
-    const {
-      isLoading,
-      loadingStage,
-      error,
-      generatedPost,
-      copyPost,
-      generatePost,
-      regeneratePost,
-      progressPercentage,
-    } = usePostGeneration();
-
-    onMounted(async () => {
-      await generatePost();
-    });
-
-    const goToHome = () => {
-      router.push("/");
-    };
-
-    return {
-      isLoading,
-      loadingStage,
-      error,
-      generatedPost,
-      copyPost,
-      regeneratePost,
-      progressPercentage,
-      goToHome,
-    };
-  },
-});
-</script>

@@ -1,10 +1,54 @@
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import Dialog from "primevue/dialog";
+import Button from "primevue/button";
+import Textarea from "primevue/textarea";
+
+const props = defineProps({
+  visible: {
+    type: Boolean,
+    required: true,
+  },
+  initialContent: {
+    type: String,
+    default: "",
+  },
+  isEditing: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["update:visible", "save"]);
+
+const content = ref(props.initialContent);
+
+watch(
+  () => props.visible,
+  (newVisible) => {
+    if (newVisible) {
+      content.value = props.initialContent;
+    }
+  }
+);
+
+const close = () => {
+  emit("update:visible", false);
+};
+
+const save = () => {
+  emit("save", content.value);
+  close();
+};
+</script>
+
 <template>
   <Dialog
-    :visible="visible"
+    :visible="props.visible"
     :style="{ width: '90%', maxWidth: '600px' }"
     :modal="true"
     :closable="false"
-    :header="isEditing ? '게시글 예시 수정' : '게시글 예시 등록'"
+    :header="props.isEditing ? '게시글 예시 수정' : '게시글 예시 등록'"
   >
     <div class="p-fluid p-4">
       <div class="field">
@@ -31,61 +75,3 @@
     </template>
   </Dialog>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, watch } from "vue";
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
-import Textarea from "primevue/textarea";
-
-export default defineComponent({
-  name: "ExampleModal",
-  components: {
-    Dialog,
-    Button,
-    Textarea,
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
-    initialContent: {
-      type: String,
-      default: "",
-    },
-    isEditing: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ["update:visible", "save"],
-  setup(props, { emit }) {
-    const content = ref(props.initialContent);
-
-    watch(
-      () => props.visible,
-      (newVisible) => {
-        if (newVisible) {
-          content.value = props.initialContent;
-        }
-      }
-    );
-
-    const close = () => {
-      emit("update:visible", false);
-    };
-
-    const save = () => {
-      emit("save", content.value);
-      close();
-    };
-
-    return {
-      content,
-      close,
-      save,
-    };
-  },
-});
-</script>

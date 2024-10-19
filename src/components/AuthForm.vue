@@ -1,7 +1,43 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import Card from "primevue/card";
+import InputText from "primevue/inputtext";
+import Password from "primevue/password";
+import Button from "primevue/button";
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  submitLabel: {
+    type: String,
+    required: true,
+  },
+  footerLink: {
+    type: String,
+    required: true,
+  },
+  footerText: {
+    type: String,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["submit"]);
+
+const email = ref("");
+const password = ref("");
+
+const handleSubmit = () => {
+  emit("submit", { email: email.value, password: password.value });
+};
+</script>
+
 <template>
   <div class="flex justify-center items-center h-screen bg-surface-100">
     <Card class="w-full max-w-md">
-      <template #title>{{ title }}</template>
+      <template #title>{{ props.title }}</template>
       <template #content>
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div>
@@ -27,55 +63,17 @@
               inputClass="w-full"
             />
           </div>
-          <Button type="submit" :label="submitLabel" class="w-full" />
+          <Button type="submit" :label="props.submitLabel" class="w-full" />
         </form>
       </template>
       <template #footer>
-        <router-link :to="footerLink" class="text-primary-600 hover:underline">
-          {{ footerText }}
+        <router-link
+          :to="props.footerLink"
+          class="text-primary-600 hover:underline"
+        >
+          {{ props.footerText }}
         </router-link>
       </template>
     </Card>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import Card from "primevue/card";
-import InputText from "primevue/inputtext";
-import Password from "primevue/password";
-import Button from "primevue/button";
-
-export default defineComponent({
-  components: { Card, InputText, Password, Button },
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    submitLabel: {
-      type: String,
-      required: true,
-    },
-    footerLink: {
-      type: String,
-      required: true,
-    },
-    footerText: {
-      type: String,
-      required: true,
-    },
-  },
-  emits: ["submit"],
-  setup(props, { emit }) {
-    const email = ref("");
-    const password = ref("");
-
-    const handleSubmit = () => {
-      emit("submit", { email: email.value, password: password.value });
-    };
-
-    return { email, password, handleSubmit };
-  },
-});
-</script>
