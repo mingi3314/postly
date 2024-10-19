@@ -11,18 +11,20 @@
       <Button label="처음으로 돌아가기" @click="goToHome" class="mt-4" />
     </template>
     <template v-else>
-      <GeneratedPost :content="generatedPost" />
-      <div class="flex justify-center gap-4 mt-4">
-        <Button
-          label="포스트 복사하기"
-          @click="copyPost"
-          class="p-button-primary"
-        />
-        <Button
-          label="다시 생성하기"
-          @click="regeneratePost"
-          class="p-button-info"
-        />
+      <div class="container mx-auto px-4 py-8">
+        <GeneratedPost :content="generatedPost" />
+        <div class="flex justify-center gap-4 mt-8">
+          <Button
+            label="다시 생성하기"
+            @click="regeneratePost"
+            class="p-button-info"
+          />
+          <Button
+            label="포스트 복사하기"
+            @click="copyPost"
+            class="p-button-primary"
+          />
+        </div>
       </div>
     </template>
     <Toast position="bottom-center" group="bc" />
