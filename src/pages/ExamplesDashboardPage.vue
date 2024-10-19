@@ -36,6 +36,7 @@
     </div>
 
     <Menu ref="menu" :model="menuItems" :popup="true" />
+    <ConfirmPopup></ConfirmPopup>
 
     <ExampleModal
       v-model:visible="modalVisible"
@@ -54,6 +55,8 @@ import Button from "primevue/button";
 import Panel from "primevue/panel";
 import ExampleModal from "@/components/ExampleModal.vue";
 import Menu from "primevue/menu";
+import ConfirmPopup from "primevue/confirmpopup";
+import { useConfirm } from "primevue/useconfirm";
 import type { PostExample } from "@/types";
 
 export default defineComponent({
@@ -63,6 +66,7 @@ export default defineComponent({
     Panel,
     ExampleModal,
     Menu,
+    ConfirmPopup,
   },
   setup() {
     const exampleStore = useExampleStore();
@@ -76,6 +80,7 @@ export default defineComponent({
       updated_at: "",
     });
     const isEditing = ref(false);
+    const confirm = useConfirm();
 
     const examples = computed(() => exampleStore.examples);
 
@@ -128,7 +133,19 @@ export default defineComponent({
       {
         label: "삭제",
         icon: "pi pi-trash",
-        command: () => deleteExample(selectedExample.value.id),
+        command: (event: { originalEvent: { target: EventTarget } }) => {
+          confirm.require({
+            target: event.originalEvent.target as HTMLElement,
+            message: "이 예시를 삭제하시겠습니까?",
+            icon: "pi pi-exclamation-triangle",
+            accept: () => {
+              deleteExample(selectedExample.value.id);
+            },
+            reject: () => {
+              // 아무 작업도 하지 않음
+            },
+          });
+        },
       },
     ]);
 
