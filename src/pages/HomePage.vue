@@ -2,13 +2,13 @@
   <div
     class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 bg-surface-50"
   >
-    <h2 class="text-3xl font-bold mb-8 text-primary-800 text-center">
-      어떤 주제로<br class="md:hidden" />
-      포스트를 작성할까요?
-    </h2>
+    <div class="w-full max-w-md -mt-16 md:-mt-24">
+      <h2 class="text-3xl font-bold mb-12 text-primary-800 text-center">
+        어떤 주제로<br class="md:hidden" />
+        포스트를 작성할까요?
+      </h2>
 
-    <div class="w-full max-w-md">
-      <div class="flex justify-center mb-6">
+      <div class="flex justify-center mb-8">
         <SelectButton
           v-model="inputMode"
           :options="inputModes"
@@ -25,11 +25,12 @@
         v-if="inputMode === 'keyword'"
         v-model="topic"
         @generate="searchNews"
+        class="mb-8"
       />
 
-      <DirectTextInput v-else @generate="generatePostFromText" />
+      <DirectTextInput v-else @generate="generatePostFromText" class="mb-8" />
 
-      <p class="text-surface-600 text-lg text-center mt-6">
+      <p class="text-surface-600 text-lg text-center mt-8">
         {{ inputModeDescription }}
       </p>
     </div>

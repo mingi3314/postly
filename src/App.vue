@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="flex flex-col min-h-screen">
-    <header class="bg-surface-0 shadow-md p-4">
+    <header class="bg-surface-0 shadow-md py-2 px-4">
       <div class="container mx-auto flex justify-between items-center">
         <router-link
           to="/"
-          class="text-2xl font-bold text-primary-800 hover:text-primary-600 transition-colors"
+          class="text-xl font-bold text-primary-800 hover:text-primary-600 transition-colors"
         >
           Post.ly
         </router-link>
