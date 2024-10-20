@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
+import ConfirmationService from "primevue/confirmationservice";
 import App from "./App.vue";
 import router from "./router";
 import { createPinia } from "pinia";
@@ -16,4 +17,5 @@ app.use(PrimeVue, {
   pt: Lara,
 });
 app.use(ToastService);
+app.use(ConfirmationService);
 app.mount("#app");

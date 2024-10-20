@@ -1,32 +1,43 @@
 <template>
-  <div class="card">
-    <DataTable :value="examples" responsiveLayout="scroll">
-      <Column field="content" header="내용">
-        <template #body="slotProps">
-          <div class="truncate max-w-md">{{ slotProps.data.content }}</div>
-        </template>
-      </Column>
-      <Column :exportable="false" style="min-width: 8rem">
-        <template #body="slotProps">
+  <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col max-w-3xl">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">게시글 예시 관리</h1>
+      <Button
+        label="새 예시 추가"
+        icon="pi pi-plus"
+        @click="openAddModal"
+        class="p-button-primary"
+      />
+    </div>
+
+    <div v-if="examples.length === 0" class="text-center text-gray-500 my-8">
+      예시가 없습니다. 새로운 예시를 추가해보세요!
+    </div>
+
+    <div v-else class="space-y-4">
+      <Panel
+        v-for="(example, index) in examples"
+        :key="example.id"
+        :header="`예시 #${index + 1}`"
+        :toggleable="true"
+        class="mb-2"
+      >
+        <template #icons>
           <Button
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-success mr-2"
-            @click="editExample(slotProps.data)"
-          />
-          <Button
-            icon="pi pi-trash"
-            class="p-button-rounded p-button-warning"
-            @click="deleteExample(slotProps.data.id)"
+            icon="pi pi-cog"
+            text
+            rounded
+            aria-label="Settings"
+            @click.stop="toggleMenu($event, example.id)"
           />
         </template>
-      </Column>
-    </DataTable>
-    <Button
-      label="새 예시 추가"
-      icon="pi pi-plus"
-      class="mt-4"
-      @click="openAddModal"
-    />
+        <p class="whitespace-pre-wrap text-sm">{{ example.content }}</p>
+      </Panel>
+    </div>
+
+    <Menu ref="menu" :model="menuItems" :popup="true" />
+    <ConfirmPopup></ConfirmPopup>
+
     <ExampleModal
       v-model:visible="modalVisible"
       :initial-content="selectedExample.content"
@@ -40,19 +51,22 @@
 import { defineComponent, ref, onMounted, computed } from "vue";
 import { useExampleStore } from "@/stores/exampleStore";
 import { useUserStore } from "@/stores/userStore";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
 import Button from "primevue/button";
+import Panel from "primevue/panel";
 import ExampleModal from "@/components/ExampleModal.vue";
+import Menu from "primevue/menu";
+import ConfirmPopup from "primevue/confirmpopup";
+import { useConfirm } from "primevue/useconfirm";
 import type { PostExample } from "@/types";
 
 export default defineComponent({
   name: "ExamplesDashboard",
   components: {
-    DataTable,
-    Column,
     Button,
+    Panel,
     ExampleModal,
+    Menu,
+    ConfirmPopup,
   },
   setup() {
     const exampleStore = useExampleStore();
@@ -66,6 +80,7 @@ export default defineComponent({
       updated_at: "",
     });
     const isEditing = ref(false);
+    const confirm = useConfirm();
 
     const examples = computed(() => exampleStore.examples);
 
@@ -108,6 +123,38 @@ export default defineComponent({
       await exampleStore.deleteExample(id);
     };
 
+    const menu = ref();
+    const menuItems = ref([
+      {
+        label: "수정",
+        icon: "pi pi-pencil",
+        command: () => editExample(selectedExample.value),
+      },
+      {
+        label: "삭제",
+        icon: "pi pi-trash",
+        command: (event: { originalEvent: { target: EventTarget } }) => {
+          confirm.require({
+            target: event.originalEvent.target as HTMLElement,
+            message: "이 예시를 삭제하시겠습니까?",
+            icon: "pi pi-exclamation-triangle",
+            accept: () => {
+              deleteExample(selectedExample.value.id);
+            },
+            reject: () => {
+              // 아무 작업도 하지 않음
+            },
+          });
+        },
+      },
+    ]);
+
+    const toggleMenu = (event: Event, exampleId: string) => {
+      selectedExample.value =
+        examples.value.find((e) => e.id === exampleId) || selectedExample.value;
+      menu.value.toggle(event);
+    };
+
     return {
       examples,
       modalVisible,
@@ -117,6 +164,9 @@ export default defineComponent({
       editExample,
       saveExample,
       deleteExample,
+      menu,
+      menuItems,
+      toggleMenu,
     };
   },
 });
