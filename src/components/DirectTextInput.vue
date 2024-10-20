@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import Panel from "primevue/panel";
+import Textarea from "primevue/textarea";
+import Button from "primevue/button";
+
+const emit = defineEmits(["generate"]);
+
+const texts = ref([""]);
+
+const panelPt = {
+  root: {
+    class: "shadow-md rounded-lg overflow-hidden border border-surface-200",
+  },
+  header: { class: "bg-surface-50 p-4 border-b border-surface-200" },
+  content: { class: "bg-white" },
+  toggleableContent: { class: "transition-all duration-300 ease-in-out" },
+};
+
+const textareaPt = {
+  root: {
+    class:
+      "w-full p-3 border border-surface-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200",
+  },
+};
+
+const buttonPt = {
+  root: {
+    class:
+      "bg-primary-600 hover:bg-primary-700 text-primary-50 font-bold px-6 py-3 rounded-md transition-colors duration-200 shadow-md hover:shadow-lg",
+  },
+};
+
+const addText = () => {
+  if (texts.value.length < 5) {
+    texts.value.push("");
+  }
+};
+
+const removeText = (index: number) => {
+  texts.value.splice(index, 1);
+};
+
+const isValid = computed(() => texts.value.some((text) => text.trim() !== ""));
+
+const generatePost = () => {
+  if (isValid.value) {
+    emit(
+      "generate",
+      texts.value.filter((text) => text.trim() !== "")
+    );
+  }
+};
+
+const primaryButtonPt = buttonPt;
+</script>
+
 <template>
   <div class="w-full max-w-xl">
     <div v-for="(text, index) in texts" :key="index" class="mb-6">
@@ -56,75 +113,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import Panel from "primevue/panel";
-import Textarea from "primevue/textarea";
-import Button from "primevue/button";
-
-export default defineComponent({
-  components: { Panel, Textarea, Button },
-  emits: ["generate"],
-  setup(props, { emit }) {
-    const texts = ref([""]);
-
-    const panelPt = {
-      root: {
-        class: "shadow-md rounded-lg overflow-hidden border border-surface-200",
-      },
-      header: { class: "bg-surface-50 p-4 border-b border-surface-200" },
-      content: { class: "bg-white" },
-      toggleableContent: { class: "transition-all duration-300 ease-in-out" },
-    };
-
-    const textareaPt = {
-      root: {
-        class:
-          "w-full p-3 border border-surface-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200",
-      },
-    };
-
-    const buttonPt = {
-      root: {
-        class:
-          "bg-primary-600 hover:bg-primary-700 text-primary-50 font-bold px-6 py-3 rounded-md transition-colors duration-200 shadow-md hover:shadow-lg",
-      },
-    };
-
-    const addText = () => {
-      if (texts.value.length < 5) {
-        texts.value.push("");
-      }
-    };
-
-    const removeText = (index: number) => {
-      texts.value.splice(index, 1);
-    };
-
-    const isValid = computed(() =>
-      texts.value.some((text) => text.trim() !== "")
-    );
-
-    const generatePost = () => {
-      if (isValid.value) {
-        emit(
-          "generate",
-          texts.value.filter((text) => text.trim() !== "")
-        );
-      }
-    };
-
-    return {
-      texts,
-      panelPt,
-      textareaPt,
-      primaryButtonPt: buttonPt,
-      addText,
-      removeText,
-      isValid,
-      generatePost,
-    };
-  },
-});
-</script>

@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { onMounted, ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useArticleStore } from "../stores/articleStore";
+import LinkPreview from "../components/LinkPreview.vue";
+import Button from "primevue/button";
+import ProgressSpinner from "primevue/progressspinner";
+import Paginator from "primevue/paginator";
+import type { NewsItem } from "../types";
+import { MAX_NEWS_ITEMS } from "../../backend/config/newsConfig";
+
+const router = useRouter();
+const articleStore = useArticleStore();
+const newsItems = ref<NewsItem[]>([]);
+const selectedItems = ref<NewsItem[]>([]);
+const isLoading = ref(true);
+const error = ref("");
+const first = ref(0);
+
+const paginatedNewsItems = computed(() => {
+  const start = first.value;
+  const end = start + 5;
+  return newsItems.value.slice(start, end);
+});
+
+const isSelected = (item: NewsItem) =>
+  selectedItems.value.some((i) => i.link === item.link);
+
+const toggleSelection = (item: NewsItem) => {
+  const index = selectedItems.value.findIndex((i) => i.link === item.link);
+  if (index === -1) {
+    if (selectedItems.value.length < MAX_NEWS_ITEMS) {
+      selectedItems.value.push(item);
+    }
+  } else {
+    selectedItems.value.splice(index, 1);
+  }
+};
+
+const generatePost = () => {
+  articleStore.setSelectedNewsItems(selectedItems.value);
+  router.push("/result");
+};
+
+const fetchNewsItems = async () => {
+  try {
+    newsItems.value = await articleStore.searchNews();
+  } catch (e) {
+    error.value = "뉴스 기사를 불러오는데 실패했습니다. 다시 시도해 주세요.";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(fetchNewsItems);
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col max-w-3xl">
     <h1 class="text-3xl font-bold mb-6">뉴스 선택하기</h1>
@@ -42,80 +99,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, onMounted, ref, computed } from "vue";
-import { useRouter } from "vue-router";
-import { useArticleStore } from "../stores/articleStore";
-import LinkPreview from "../components/LinkPreview.vue";
-import Button from "primevue/button";
-import ProgressSpinner from "primevue/progressspinner";
-import Paginator from "primevue/paginator";
-import type { NewsItem } from "../types";
-import { MAX_NEWS_ITEMS } from "../../backend/config/newsConfig";
-
-export default defineComponent({
-  name: "NewsSelectionPage",
-  components: { LinkPreview, Button, ProgressSpinner, Paginator },
-  setup() {
-    const router = useRouter();
-    const articleStore = useArticleStore();
-    const newsItems = ref<NewsItem[]>([]);
-    const selectedItems = ref<NewsItem[]>([]);
-    const isLoading = ref(true);
-    const error = ref("");
-    const first = ref(0);
-
-    const paginatedNewsItems = computed(() => {
-      const start = first.value;
-      const end = start + 5;
-      return newsItems.value.slice(start, end);
-    });
-
-    const isSelected = (item: NewsItem) =>
-      selectedItems.value.some((i) => i.link === item.link);
-
-    const toggleSelection = (item: NewsItem) => {
-      const index = selectedItems.value.findIndex((i) => i.link === item.link);
-      if (index === -1) {
-        if (selectedItems.value.length < MAX_NEWS_ITEMS) {
-          selectedItems.value.push(item);
-        }
-      } else {
-        selectedItems.value.splice(index, 1);
-      }
-    };
-
-    const generatePost = () => {
-      articleStore.setSelectedNewsItems(selectedItems.value);
-      router.push("/result");
-    };
-
-    const fetchNewsItems = async () => {
-      try {
-        newsItems.value = await articleStore.searchNews();
-      } catch (e) {
-        error.value =
-          "뉴스 기사를 불러오는데 실패했습니다. 다시 시도해 주세요.";
-      } finally {
-        isLoading.value = false;
-      }
-    };
-
-    onMounted(fetchNewsItems);
-
-    return {
-      newsItems,
-      selectedItems,
-      isLoading,
-      error,
-      toggleSelection,
-      generatePost,
-      paginatedNewsItems,
-      first,
-      MAX_NEWS_ITEMS,
-      isSelected,
-    };
-  },
-});
-</script>

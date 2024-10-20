@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import Card from "primevue/card";
+import Avatar from "primevue/avatar";
+
+const props = defineProps({
+  content: {
+    type: String,
+    required: true,
+  },
+});
+</script>
+
 <template>
   <Card
     :pt="{
@@ -38,7 +50,7 @@
         <p class="font-semibold text-sm pb-1">1,235 likes</p>
         <p class="text-sm leading-5">
           <span class="font-semibold mr-1">username</span>
-          {{ content }}
+          {{ props.content }}
         </p>
         <p
           class="text-sm text-surface-500 dark:text-surface-400 pt-1 cursor-pointer"
@@ -50,23 +62,3 @@
     </template>
   </Card>
 </template>
-
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
-import Card from "primevue/card";
-import Avatar from "primevue/avatar";
-
-export default defineComponent({
-  name: "GeneratedPost",
-  components: {
-    Card,
-    Avatar,
-  },
-  props: {
-    content: {
-      type: String as PropType<string>,
-      required: true,
-    },
-  },
-});
-</script>
