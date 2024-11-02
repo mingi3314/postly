@@ -6,13 +6,16 @@ export class PostGenerationService {
 
   async generatePost({
     references,
+    guideline,
     examples,
   }: {
     references: Reference[];
-    examples: Example[];
+    guideline?: string;
+    examples?: Example[];
   }): Promise<string> {
     const response = await axios.post(`${this.apiUrl}/generate-post`, {
       references,
+      guideline,
       examples,
     });
     return response.data.result;

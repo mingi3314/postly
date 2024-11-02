@@ -55,16 +55,19 @@ export const useArticleStore = defineStore("article", {
     },
     async createPost(
       references: Reference[],
-      examples: PostExample[]
+      guideline?: string,
+      examples?: PostExample[]
     ): Promise<string> {
       const postGenerationService = new PostGenerationService(API_URL);
-      const formattedExamples: Example[] = examples.map((example) => ({
-        text: example.content,
-      }));
+      const formattedExamples: Example[] =
+        examples?.map((example) => ({
+          text: example.content,
+        })) ?? [];
 
       try {
         return await postGenerationService.generatePost({
           references,
+          guideline,
           examples: formattedExamples,
         });
       } catch (error) {

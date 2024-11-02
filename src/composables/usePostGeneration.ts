@@ -1,14 +1,16 @@
 import { ref } from "vue";
 import { useArticleStore } from "../stores/articleStore";
 import { useExampleStore } from "../stores/exampleStore";
+import { usePostGuidelineStore } from "../stores/postGuidelineStore";
 import { useUserStore } from "../stores/userStore";
 import { useToast } from "primevue/usetoast";
 import { useLoadingState } from "./useLoadingState";
-import type { Reference, PostExample } from "../types";
+import type { Reference, PostExample, PostGuideline } from "../types";
 
 export function usePostGeneration() {
   const articleStore = useArticleStore();
   const exampleStore = useExampleStore();
+  const postGuidelineStore = usePostGuidelineStore();
   const userStore = useUserStore();
   const toast = useToast();
   const {
@@ -25,6 +27,7 @@ export function usePostGeneration() {
   const generatedPost = ref("");
   const references = ref<Reference[]>([]);
   const examples = ref<PostExample[]>([]);
+  const guideline = ref<PostGuideline | null>(null);
 
   const copyPost = () => {
     navigator.clipboard.writeText(generatedPost.value);
@@ -50,11 +53,15 @@ export function usePostGeneration() {
 
       if (userStore.isLoggedIn && userStore.user) {
         examples.value = await exampleStore.fetchExamples(userStore.user.id);
+        guideline.value = await postGuidelineStore.getGuideline(
+          userStore.user.id
+        );
       }
 
       setLoadingStage("generating");
       generatedPost.value = await articleStore.createPost(
         references.value,
+        guideline.value?.content,
         examples.value
       );
 
@@ -76,6 +83,8 @@ export function usePostGeneration() {
     loadingStage,
     error,
     generatedPost,
+    guideline,
+    examples,
     copyPost,
     generatePost,
     regeneratePost,
