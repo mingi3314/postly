@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useExampleStore } from "@/stores/exampleStore";
+import { usePostExampleStore } from "@/stores/postExampleStore";
 import { useUserStore } from "@/stores/userStore";
 import Button from "primevue/button";
 import Panel from "primevue/panel";
@@ -10,7 +10,7 @@ import ConfirmPopup from "primevue/confirmpopup";
 import { useConfirm } from "primevue/useconfirm";
 import type { PostExample } from "@/types";
 
-const exampleStore = useExampleStore();
+const postExampleStore = usePostExampleStore();
 const userStore = useUserStore();
 const modalVisible = ref(false);
 const selectedExample = ref<PostExample>({
@@ -23,11 +23,11 @@ const selectedExample = ref<PostExample>({
 const isEditing = ref(false);
 const confirm = useConfirm();
 
-const examples = computed(() => exampleStore.examples);
+const examples = computed(() => postExampleStore.examples);
 
 onMounted(async () => {
   if (userStore.user) {
-    await exampleStore.fetchExamples(userStore.user.id);
+    await postExampleStore.fetchExamples(userStore.user.id);
   }
 });
 
@@ -52,16 +52,16 @@ const editExample = (example: PostExample) => {
 const saveExample = async (content: string) => {
   if (userStore.user) {
     if (isEditing.value) {
-      await exampleStore.updateExample(selectedExample.value.id, content);
+      await postExampleStore.updateExample(selectedExample.value.id, content);
     } else {
-      await exampleStore.addExample(userStore.user.id, content);
+      await postExampleStore.addExample(userStore.user.id, content);
     }
     modalVisible.value = false;
   }
 };
 
 const deleteExample = async (id: string) => {
-  await exampleStore.deleteExample(id);
+  await postExampleStore.deleteExample(id);
 };
 
 const menu = ref();
