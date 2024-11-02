@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { useArticleStore } from "../stores/articleStore";
-import { useExampleStore } from "../stores/exampleStore";
+import { usePostExampleStore } from "../stores/postExampleStore";
 import { usePostGuidelineStore } from "../stores/postGuidelineStore";
 import { useUserStore } from "../stores/userStore";
 import { useToast } from "primevue/usetoast";
@@ -9,7 +9,7 @@ import type { Reference, PostExample, PostGuideline } from "../types";
 
 export function usePostGeneration() {
   const articleStore = useArticleStore();
-  const exampleStore = useExampleStore();
+  const postExampleStore = usePostExampleStore();
   const postGuidelineStore = usePostGuidelineStore();
   const userStore = useUserStore();
   const toast = useToast();
@@ -52,7 +52,9 @@ export function usePostGeneration() {
       }
 
       if (userStore.isLoggedIn && userStore.user) {
-        examples.value = await exampleStore.fetchExamples(userStore.user.id);
+        examples.value = await postExampleStore.fetchExamples(
+          userStore.user.id
+        );
         guideline.value = await postGuidelineStore.getGuideline(
           userStore.user.id
         );

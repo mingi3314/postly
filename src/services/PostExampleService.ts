@@ -1,8 +1,8 @@
 import { supabase } from "@/supabase";
 import type { PostExample } from "@/types";
 
-export class ExampleService {
-  async getExamples(userId: string): Promise<PostExample[]> {
+export class PostExampleService {
+  async fetchExamples(userId: string): Promise<PostExample[]> {
     const { data, error } = await supabase
       .from("post_examples")
       .select("*")
