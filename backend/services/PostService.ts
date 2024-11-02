@@ -2,23 +2,33 @@ import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { createComposedPrompt } from "../prompts/CreateComposedPrompt.js";
+import { defaultContent } from "../prompts/DefaultPromptContents.js";
 
 export async function generatePost(
   references: { text: string }[],
-  examples: { text: string }[]
+  guideline?: string,
+  examples?: { text: string }[]
 ): Promise<string> {
   const formattedReferences = references
     .map((ref) => formatReference(ref))
     .join("\n\n");
 
-  return await generatePostContent(formattedReferences, examples);
+  const finalGuideline = guideline ?? defaultContent.guideline;
+  const finalExamples = examples ?? defaultContent.examples;
+
+  return await generatePostContent(
+    formattedReferences,
+    finalGuideline,
+    finalExamples
+  );
 }
 
 async function generatePostContent(
   formattedReferences: string,
+  guideline: string,
   examples: { text: string }[]
 ): Promise<string> {
-  const systemTemplate = createComposedPrompt({ examples });
+  const systemTemplate = createComposedPrompt({ guideline, examples });
   const userTemplate = `<References>\n{references}\n</References>`;
 
   const prompt = ChatPromptTemplate.fromMessages([
